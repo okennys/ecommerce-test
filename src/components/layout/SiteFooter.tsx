@@ -2,7 +2,6 @@ import Link from "next/link";
 import { footerNav, socialLinks } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { NewsletterForm } from "./NewsletterForm";
-import { RegionTrigger } from "./RegionTrigger";
 
 export function SiteFooter() {
   const year = new Date().getFullYear();
@@ -48,8 +47,6 @@ export function SiteFooter() {
             </li>
           ))}
         </ul>
-
-        <RegionTrigger />
 
         <p className="label text-ink-muted">{t.footer.rights(year)}</p>
       </div>

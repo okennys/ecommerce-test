@@ -8,8 +8,6 @@ import { CloseIcon } from "@/components/ui/icons";
 import type { Facets } from "@/lib/data/products";
 import { usePlpParams } from "./plp-params";
 
-const PRICE_STOPS = [1500, 3000, 5000, 10000];
-
 export function FilterPanel({
   open,
   onClose,
@@ -32,7 +30,7 @@ export function FilterPanel({
   }, [open, onClose]);
 
   const activeCount = params.sizes.length + params.colours.length + (params.maxPrice ? 1 : 0);
-  const stops = PRICE_STOPS.filter((s) => s < facets.priceMax);
+  const stops = facets.priceStops;
 
   return (
     <div
@@ -93,7 +91,9 @@ export function FilterPanel({
           {/* Cor */}
           <section className="py-6">
             <h3 className="label-lg mb-4">Cor</h3>
-            <ul className="grid grid-cols-2 gap-y-3">
+            {/* one column: the catalogue has colour names as long as
+                "Lurex Prata com Dourado", which a two-up grid clips */}
+            <ul className="flex flex-col gap-y-3">
               {facets.colours.map((c) => {
                 const on = params.colours.includes(c.name);
                 return (
@@ -102,11 +102,11 @@ export function FilterPanel({
                       type="button"
                       aria-pressed={on}
                       onClick={() => toggleInList("cor", c.name)}
-                      className="label flex items-center gap-2.5"
+                      className="label flex w-full items-center gap-2.5 text-left"
                     >
                       <span
                         className={cn(
-                          "h-4 w-4 border",
+                          "h-4 w-4 shrink-0 border",
                           on ? "border-ink ring-1 ring-ink ring-offset-2 ring-offset-paper" : "border-line-strong",
                         )}
                         style={{ backgroundColor: c.hex }}

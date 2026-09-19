@@ -49,8 +49,9 @@ export interface ShippingMethod {
 }
 
 export const SHIPPING_METHODS: ShippingMethod[] = [
-  { id: "padrao", label: "Entrega padrão", eta: "3 a 7 dias úteis", amount: 3500 },
-  { id: "expressa", label: "Entrega expressa", eta: "1 a 2 dias úteis", amount: 8900 },
+  // amounts in BRL (reais), same unit as product prices
+  { id: "padrao", label: "Entrega padrão", eta: "3 a 7 dias úteis", amount: 35 },
+  { id: "expressa", label: "Entrega expressa", eta: "1 a 2 dias úteis", amount: 89 },
   { id: "retirada", label: "Retirada na loja", eta: "Pronto em 24h", amount: 0 },
 ];
 

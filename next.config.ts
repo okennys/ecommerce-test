@@ -1,11 +1,12 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // typedRoutes stays OFF for now — a few links still point at etapa-2 paths.
+  // typedRoutes stays OFF until the real route tree (PLP/PDP/checkout) exists —
+  // the shell links to many not-yet-built paths. Re-enable in a later milestone.
   typedRoutes: false,
 
-  // All imagery is local (`public/media/ph/*`). Add a hostname here when real
-  // campaign / Medusa assets move to a CDN.
+  // Milestone 1 imagery is 100% local (`public/media/ph/*`). When real assets
+  // arrive from a CDN / Medusa file host, add its hostname here.
   images: {
     remotePatterns: [],
   },

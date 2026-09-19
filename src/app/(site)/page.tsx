@@ -4,10 +4,20 @@ import { ProductRail } from "@/components/home/ProductRail";
 import { CampaignSplit } from "@/components/home/CampaignSplit";
 import { ph } from "@/lib/data/media";
 import { t } from "@/lib/dictionary";
-import { products, getProductsByCollection } from "@/lib/data/products";
+import { products, productTags, getProductsByCollection, getProduct } from "@/lib/data/products";
+
+/**
+ * The catalogue shoots every piece twice: a still on a pale backdrop, then the
+ * same piece on a model. Stills carry the grid; the model frames are what the
+ * editorial bands want.
+ */
+function modelShot(handle: string, fallback: string): string {
+  const p = getProduct(handle);
+  return p?.images[1]?.url ?? p?.images[0]?.url ?? fallback;
+}
 
 export default function HomePage() {
-  const season = getProductsByCollection("outono-inverno-26").slice(0, 4);
+  const season = products.filter((p) => productTags(p).includes("novidade")).slice(0, 4);
   const icons = getProductsByCollection("icones").slice(0, 4);
 
   return (
@@ -19,19 +29,19 @@ export default function HomePage() {
         <ScrollPanel
           wordmark
           priority
-          media={{ type: "image", src: ph("editorial-season"), alt: "Campanha Outono Inverno 26" }}
+          media={{ type: "image", src: ph("editorial-season"), alt: "Campanha JU RUDOLPH" }}
           kicker={t.home.heroKicker}
-          cta={{ label: t.home.heroCta, href: "/mulher/outono-inverno-26" }}
+          cta={{ label: t.home.heroCta, href: "/mulher/novidades" }}
         />
         <ScrollPanel
-          media={{ type: "image", src: ph("editorial-colecao"), alt: "Coleção Outono Inverno 26" }}
-          kicker="Outono Inverno 26 · A coleção"
-          cta={{ label: "Descobrir", href: "/mulher/outono-inverno-26" }}
+          media={{ type: "image", src: ph("editorial-colecao"), alt: "A coleção JU RUDOLPH" }}
+          kicker="A coleção"
+          cta={{ label: "Descobrir", href: "/mulher" }}
         />
         <ScrollPanel
-          media={{ type: "image", src: ph("editorial-bolsas"), alt: "As bolsas da estação" }}
-          kicker="As bolsas"
-          cta={{ label: "Ver as bolsas", href: "/mulher/bolsas" }}
+          media={{ type: "image", src: ph("split-mulher"), alt: "Selecionados pela Ju" }}
+          kicker="Selecionados pela Ju"
+          cta={{ label: "Ver a seleção", href: "/highlights/selecao" }}
         />
       </ScrollStack>
 
@@ -39,33 +49,24 @@ export default function HomePage() {
       <CampaignSplit
         panels={[
           {
-            src: ph("bag-01"),
-            alt: "Bolsas",
-            title: "Bolsas",
-            cta: { label: "Ver", href: "/mulher/bolsas" },
+            src: modelShot("vestido-rafa", ph("look-02")),
+            alt: "Vestidos JU RUDOLPH",
+            title: "Vestidos",
+            cta: { label: "Ver", href: "/mulher/vestidos" },
           },
           {
-            src: ph("split-mulher"),
-            alt: "Ready to wear",
-            title: "Ready to wear",
-            cta: { label: "Descobrir", href: "/mulher/roupas" },
+            src: modelShot("conjunto-leticia", ph("split-mulher")),
+            alt: "Conjuntos JU RUDOLPH",
+            title: "Conjuntos",
+            cta: { label: "Descobrir", href: "/mulher/conjuntos" },
           },
         ]}
       />
 
       <ProductRail
-        title="Selecionados da estação"
+        title="Novidades"
         products={season.length ? season : products.slice(0, 4)}
         viewAllHref="/mulher/novidades"
-      />
-
-      <EditorialBlock
-        src={ph("editorial-film")}
-        alt="Editorial da estação"
-        kicker="Editorial"
-        title="Os gestos da alfaiataria"
-        cta={{ label: "Ver o editorial", href: "/editorial" }}
-        size="tall"
       />
 
       <ProductRail

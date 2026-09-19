@@ -27,9 +27,8 @@ export async function generateMetadata({
 
 function buildCrumbs(product: ReturnType<typeof getProduct>): Crumb[] {
   const crumbs: Crumb[] = [{ label: "Início", href: "/" }, { label: "Mulher", href: "/mulher" }];
-  const [cat, sub] = product?.categories ?? [];
+  const [cat] = product?.categories ?? [];
   if (cat) crumbs.push({ label: cat.name, href: `/mulher/${cat.handle}` });
-  if (sub) crumbs.push({ label: sub.name, href: `/mulher/${cat?.handle}/${sub.handle}` });
   crumbs.push({ label: product?.title ?? "", href: `/produtos/${product?.handle}` });
   return crumbs;
 }

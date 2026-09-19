@@ -5,6 +5,7 @@ import {
   hasCategory,
   productTags,
   productFromPrice,
+  CATEGORY_NAMES,
 } from "./products";
 
 /**
@@ -12,16 +13,21 @@ import {
  * `navigation.ts`; kept separate so a node can carry PLP-only data (editorial
  * band image, product-selection rule, breadcrumbs).
  *
+ * The categories below are exactly the ones the brand actually stocks. There is
+ * no footwear, leather goods or eyewear in the catalogue, so there are no nodes
+ * for them — anything added later needs a node here AND an entry in
+ * `navigation.ts`.
+ *
  * SWAP POINT: generate from `store.category.list()` + `store.collection.list()`.
  */
 
-export type Section = "mulher" | "highlights" | "presentes";
+export type Section = "mulher" | "sale" | "highlights" | "presentes";
 
 export interface CatalogNode {
   section: Section;
-  /** path segments AFTER the section, e.g. ["roupas","vestidos"] */
+  /** path segments AFTER the section, e.g. ["vestidos"] */
   segments: string[];
-  /** full url path, e.g. "/mulher/roupas/vestidos" */
+  /** full url path, e.g. "/mulher/vestidos" */
   href: string;
   title: string;
   intro?: string;
@@ -43,10 +49,24 @@ interface RawNode {
   children?: Record<string, RawNode>;
 }
 
+/** One child node per stocked category, in the order they appear in the menu. */
+const categoryChildren: Record<string, RawNode> = Object.fromEntries(
+  (
+    ["vestidos", "blusas", "conjuntos", "calcas", "denim", "saias", "casacos", "macacoes", "joias"] as const
+  ).map((handle) => [
+    handle,
+    {
+      title: CATEGORY_NAMES[handle],
+      select: { by: "category", handle },
+      ...(handle === "joias" ? { editorialImage: "editorial-acessorios" } : {}),
+    } satisfies RawNode,
+  ]),
+);
+
 const TREE: Record<Section, RawNode> = {
   mulher: {
     title: "Mulher",
-    intro: "Toda a coleção JU RUDOLPH — alfaiataria, vestidos, bolsas, sapatos e acessórios.",
+    intro: "Toda a coleção JU RUDOLPH.",
     editorialImage: "editorial-colecao",
     select: { by: "all" },
     children: {
@@ -56,73 +76,14 @@ const TREE: Record<Section, RawNode> = {
         editorialImage: "editorial-season",
         select: { by: "tag", handle: "novidade" },
       },
-      "outono-inverno-26": {
-        title: "Outono Inverno 26",
-        intro: "A nova coleção.",
-        editorialImage: "editorial-season",
-        select: { by: "collection", handle: "outono-inverno-26" },
-      },
-      "pre-colecao": {
-        title: "Pré-coleção",
-        select: { by: "collection", handle: "pre-colecao" },
-      },
-      "de-volta": {
-        title: "De volta ao estoque",
-        select: { by: "tag", handle: "de-volta" },
-      },
-      roupas: {
-        title: "Roupas",
-        editorialImage: "editorial-roupas",
-        select: { by: "category", handle: "roupas" },
-        children: {
-          vestidos: { title: "Vestidos", select: { by: "category", handle: "vestidos" } },
-          alfaiataria: { title: "Alfaiataria", select: { by: "category", handle: "alfaiataria" } },
-          camisas: { title: "Camisas e blusas", select: { by: "category", handle: "camisas" } },
-          trico: { title: "Tricô", select: { by: "category", handle: "trico" } },
-          jaquetas: {
-            title: "Jaquetas e casacos",
-            select: { by: "category", handle: "jaquetas" },
-          },
-          calcas: { title: "Calças", select: { by: "category", handle: "calcas" } },
-          saias: { title: "Saias", select: { by: "category", handle: "saias" } },
-        },
-      },
-      bolsas: {
-        title: "Bolsas",
-        editorialImage: "editorial-bolsas",
-        select: { by: "category", handle: "bolsas" },
-        children: {
-          rudolph: { title: "Rudolph", select: { by: "category", handle: "rudolph" } },
-          jabuti: { title: "Jabuti", select: { by: "category", handle: "jabuti" } },
-          vera: { title: "Vera", select: { by: "category", handle: "vera" } },
-          ombro: { title: "Ombro", select: { by: "category", handle: "ombro" } },
-          tote: { title: "Tote", select: { by: "category", handle: "tote" } },
-          mini: { title: "Mini", select: { by: "category", handle: "mini" } },
-        },
-      },
-      sapatos: {
-        title: "Sapatos",
-        editorialImage: "editorial-sapatos",
-        select: { by: "category", handle: "sapatos" },
-        children: {
-          saltos: { title: "Saltos", select: { by: "category", handle: "saltos" } },
-          rasteiras: { title: "Rasteiras", select: { by: "category", handle: "rasteiras" } },
-          botas: { title: "Botas", select: { by: "category", handle: "botas" } },
-          tenis: { title: "Tênis", select: { by: "category", handle: "tenis" } },
-        },
-      },
-      acessorios: {
-        title: "Acessórios",
-        editorialImage: "editorial-acessorios",
-        select: { by: "category", handle: "acessorios" },
-        children: {
-          joias: { title: "Joias", select: { by: "category", handle: "joias" } },
-          cintos: { title: "Cintos", select: { by: "category", handle: "cintos" } },
-          oculos: { title: "Óculos", select: { by: "category", handle: "oculos" } },
-          lencos: { title: "Lenços", select: { by: "category", handle: "lencos" } },
-        },
-      },
+      ...categoryChildren,
     },
+  },
+  sale: {
+    title: "Sale",
+    intro: "Peças selecionadas com preço especial, enquanto durarem os estoques.",
+    editorialImage: "editorial-roupas",
+    select: { by: "tag", handle: "sale" },
   },
   highlights: {
     title: "Highlights",
@@ -138,7 +99,7 @@ const TREE: Record<Section, RawNode> = {
       icones: {
         title: "Ícones",
         intro: "As peças que definem a casa.",
-        editorialImage: "editorial-bolsas",
+        editorialImage: "editorial-colecao",
         select: { by: "collection", handle: "icones" },
       },
     },
@@ -153,8 +114,8 @@ const TREE: Record<Section, RawNode> = {
         title: "Novidades para presentear",
         select: { by: "tag", handle: "novidade" },
       },
-      bolsas: { title: "Bolsas-ícone", select: { by: "collection", handle: "icones" } },
-      "ate-1500": { title: "Até R$ 1.500", select: { by: "maxPrice", amount: 1500 } },
+      joias: { title: "Joias", select: { by: "category", handle: "joias" } },
+      "ate-500": { title: "Até R$ 500", select: { by: "maxPrice", amount: 500 } },
     },
   },
 };
@@ -205,9 +166,16 @@ export function getCatalogNode(section: Section, segments: string[]): CatalogNod
 
 /** All `[[...path]]` param combos for a section, for generateStaticParams. */
 export function catalogParamsForSection(section: Section): { path: string[] }[] {
-  return catalogNodes
-    .filter((n) => n.section === section)
-    .map((n) => ({ path: n.segments }));
+  return catalogNodes.filter((n) => n.section === section).map((n) => ({ path: n.segments }));
+}
+
+/** The PLP node a product belongs to — used for PDP breadcrumbs. */
+export function nodeForProduct(product: StoreProduct): CatalogNode | undefined {
+  const handle = product.categories?.[0]?.handle;
+  if (!handle) return undefined;
+  return catalogNodes.find(
+    (n) => n.section === "mulher" && n.select.by === "category" && n.select.handle === handle,
+  );
 }
 
 export function getProductsForNode(node: CatalogNode): StoreProduct[] {

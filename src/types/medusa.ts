@@ -25,6 +25,8 @@ export interface StoreProductOption {
 
 export interface StoreCalculatedPrice {
   calculated_amount: number;
+  /** pre-discount price; present only while the variant is on sale */
+  original_amount?: number;
   currency_code: string;
 }
 

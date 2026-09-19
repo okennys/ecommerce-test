@@ -46,7 +46,7 @@ export const stores: Store[] = [
     address: "Av. Ataulfo de Paiva, 1079 — Leblon",
     phone: "+55 21 2540-3300",
     hours: "Seg a sáb, 10h–21h · Dom, 13h–20h",
-    image: "editorial-bolsas",
+    image: "editorial-atelier",
   },
   {
     slug: "rio-de-janeiro-village-mall",
@@ -56,7 +56,7 @@ export const stores: Store[] = [
     address: "Av. das Américas, 3900 — Barra da Tijuca",
     phone: "+55 21 3252-2900",
     hours: "Seg a sáb, 10h–22h · Dom, 15h–21h",
-    image: "editorial-sapatos",
+    image: "editorial-film",
   },
   {
     slug: "curitiba-batel",

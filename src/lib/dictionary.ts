@@ -25,7 +25,6 @@ export const t = {
     openMenu: "Abrir menu",
     openSearch: "Abrir busca",
     openBag: "Abrir sacola",
-    openRegion: "Escolher país e idioma",
     primaryNav: "Navegação principal",
     utilityNav: "Serviços e conta",
     footerNav: "Rodapé",
@@ -43,7 +42,7 @@ export const t = {
   },
 
   home: {
-    heroKicker: "Outono Inverno 26",
+    heroKicker: "A nova coleção",
     heroTitle: "JU RUDOLPH",
     heroCaption: "A nova coleção",
     heroCta: "Descobrir",
@@ -62,16 +61,9 @@ export const t = {
     quantity: "Quantidade",
   },
 
-  region: {
-    title: "País e idioma",
-    intro: "Escolha onde você quer receber suas compras.",
-    current: "Seleção atual",
-    confirm: "Confirmar",
-  },
-
   newsletter: {
     title: "Newsletter",
-    prompt: "Receba lançamentos, editoriais e acesso antecipado.",
+    prompt: "Receba lançamentos e acesso antecipado.",
     placeholder: "Seu e-mail",
     submit: "Inscrever",
     consent:

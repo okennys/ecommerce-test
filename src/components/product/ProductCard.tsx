@@ -3,7 +3,13 @@ import Link from "next/link";
 import type { StoreProduct } from "@/types/medusa";
 import { t } from "@/lib/dictionary";
 import { formatPrice } from "@/lib/format";
-import { productFromPrice, productColours, isInStock } from "@/lib/data/products";
+import {
+  productFromPrice,
+  namedColours,
+  isInStock,
+  productCompareAt,
+  discountPercent,
+} from "@/lib/data/products";
 
 /**
  * Catalogue tile — shared by the homepage rails and the PLP grid.
@@ -19,8 +25,9 @@ export function ProductCard({
   priority?: boolean;
 }) {
   const price = productFromPrice(product);
+  const compareAt = productCompareAt(product);
   const [front, back] = product.images;
-  const colours = productColours(product);
+  const colours = namedColours(product);
   const soldOut = !isInStock(product);
 
   return (
@@ -48,11 +55,25 @@ export function ProductCard({
             Esgotado
           </span>
         )}
+        {compareAt && (
+          <span className="label absolute left-3 top-3 bg-ink px-2 py-1 text-on-dark">
+            −{discountPercent(product)}%
+          </span>
+        )}
       </div>
 
       <div className="mt-4 space-y-1 text-center">
         <p className="label">{product.title}</p>
-        <p className="label text-ink-muted">{formatPrice(price.amount, price.currency)}</p>
+        <p className="label text-ink-muted">
+          {compareAt && (
+            <span className="mr-2 text-ink-muted/70 line-through">
+              {formatPrice(compareAt, price.currency)}
+            </span>
+          )}
+          <span className={compareAt ? "text-ink" : undefined}>
+            {formatPrice(price.amount, price.currency)}
+          </span>
+        </p>
         <p className="label text-[10px] text-ink-muted">{t.common.taxIncluded}</p>
         {colours.length > 1 && (
           <div className="flex items-center justify-center gap-1.5 pt-1.5">

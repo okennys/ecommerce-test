@@ -16,6 +16,8 @@ export function CampaignSplit({ panels }: { panels: [Panel, Panel] }) {
       {panels.map((panel) => (
         <Reveal key={panel.title} className="relative aspect-[4/5] overflow-hidden bg-paper md:aspect-[4/5]">
           <Image src={panel.src} alt={panel.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
+          {/* the catalogue shoots on pale backdrops — the caption needs its own ground */}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />
           <div className="absolute inset-x-0 bottom-0 flex flex-col items-center gap-3 p-8 text-center text-on-dark">
             <h2 className="label-lg">{panel.title}</h2>
             <TextCta href={panel.cta.href} className="text-on-dark">

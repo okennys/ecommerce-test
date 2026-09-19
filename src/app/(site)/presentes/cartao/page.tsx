@@ -26,7 +26,7 @@ export default function CartaoPresentePage() {
 
       <div className="lg:grid lg:grid-cols-2 lg:gap-16">
         <div className="relative aspect-[4/5] w-full bg-paper-raised">
-          <Image src={ph("editorial-bolsas")} alt="Cartão-presente JU RUDOLPH" fill priority sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
+          <Image src={ph("editorial-acessorios")} alt="Cartão-presente JU RUDOLPH" fill priority sizes="(min-width:1024px) 45vw, 100vw" className="object-cover" />
         </div>
 
         <div className="mt-10 lg:mt-0">

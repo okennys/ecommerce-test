@@ -6,7 +6,6 @@ import { primaryNav, utilityNav } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { cn } from "@/lib/cn";
 import { useScrollLock } from "@/lib/useScrollLock";
-import { useUI } from "@/context/UIProvider";
 import { Logo } from "@/components/ui/Logo";
 import { ChevronDownIcon, CloseIcon } from "@/components/ui/icons";
 
@@ -18,7 +17,6 @@ export function MobileNav({
   open: boolean;
   onClose: () => void;
 }) {
-  const { openRegion } = useUI();
   const [expanded, setExpanded] = useState<string | null>(null);
 
   useScrollLock(open);
@@ -138,18 +136,6 @@ export function MobileNav({
             <Link href="/conta" onClick={onClose} className="label block py-1">
               {t.header.account}
             </Link>
-          </li>
-          <li>
-            <button
-              type="button"
-              onClick={() => {
-                onClose();
-                openRegion();
-              }}
-              className="label block py-1"
-            >
-              {t.region.title}
-            </button>
           </li>
         </ul>
       </div>

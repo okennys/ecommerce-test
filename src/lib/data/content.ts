@@ -92,7 +92,7 @@ export const contentPages: Record<string, ContentPage> = {
     blocks: [
       P("O que começou como um serviço de sob-medida para amigas virou, em poucos anos, uma casa de moda com ponto de venda próprio e uma coleção pensada estação a estação."),
       H("Feito à mão, em São Paulo"),
-      P("Todas as peças de alfaiataria e as bolsas-ícone são produzidas no ateliê da marca, por uma equipe de costureiras e artesãos com décadas de experiência."),
+      P("Todas as peças de alfaiataria são produzidas no ateliê da marca, por uma equipe de costureiras com décadas de experiência."),
       P("A produção é feita em pequenos lotes: preferimos repor um modelo que vende bem a empurrar estoque que vira remarcação."),
       H("O que nos guia"),
       P("Roupa que se move com o corpo, que envelhece bem e que pode voltar para o ateliê para ajustes em vez de ir para o descarte."),
@@ -107,8 +107,8 @@ export const contentPages: Record<string, ContentPage> = {
       P("Nossa abordagem de sustentabilidade não está num selo — está no modelo de negócio: coleções curtas, produção sob demanda e um serviço de conserto vitalício para as peças de alfaiataria."),
       H("Materiais"),
       { type: "list", items: [
-        "Lãs de fornecedores com certificação de bem-estar animal.",
-        "Couro de curtumes rastreáveis, subproduto da indústria alimentícia.",
+        "Lãs e tricôs de fornecedores com certificação de bem-estar animal.",
+        "Denim de lavanderias que reaproveitam a água do processo.",
         "Forros e etiquetas em viscose de fonte responsável.",
       ] },
       H("Circularidade"),
@@ -140,7 +140,7 @@ export const contentPages: Record<string, ContentPage> = {
     blocks: [
       P("Para solicitações de imagens em alta resolução, empréstimo de peças e entrevistas, escreva para imprensa@jurudolph.com.br."),
       H("Kit de imprensa"),
-      P("O kit da coleção Outono Inverno 26 (lookbook, ficha técnica e fotos de campanha) estará disponível para download nesta página."),
+      P("O kit da coleção (lookbook, ficha técnica e fotos de campanha) estará disponível para download nesta página."),
     ],
   },
 
@@ -175,13 +175,12 @@ export const contentPages: Record<string, ContentPage> = {
     section: "servicos",
     slug: "cuidados",
     title: "Cuidados com a peça",
-    intro: "Conserto, limpeza especializada e hidratação de couro — para toda a vida da peça.",
+    intro: "Conserto, ajuste e limpeza especializada — para toda a vida da peça.",
     blocks: [
       H("Alfaiataria"),
       P("Ajustes de barra, cintura e mangas são gratuitos na primeira semana e têm preço de custo depois disso, para sempre."),
-      H("Couro"),
-      P("Serviço de hidratação e reparo de alças e ferragens em qualquer loja JU RUDOLPH."),
-      P("Leia também o editorial “Como cuidar das suas bolsas de couro”."),
+      H("Lurex, paetê e tricô"),
+      P("Reparo de fios puxados, troca de zíper e reforço de alças em qualquer loja JU RUDOLPH."),
     ],
   },
   "servicos/presente": {
@@ -217,13 +216,13 @@ export const contentPages: Record<string, ContentPage> = {
     section: "ajuda",
     slug: "envio",
     title: "Envio e prazos",
-    intro: "Enviamos para todo o Brasil. Frete grátis acima de R$ 1.500.",
+    intro: "Enviamos para todo o Brasil. Frete grátis acima de R$ 500.",
     blocks: [
       H("Prazos"),
       { type: "list", items: [
-        "Entrega padrão: 3 a 7 dias úteis.",
-        "Entrega expressa: 1 a 2 dias úteis (capitais).",
-        "Retirada em loja: pronto em 24h.",
+        "Entrega padrão: 3 a 7 dias úteis — R$ 35.",
+        "Entrega expressa: 1 a 2 dias úteis (capitais) — R$ 89.",
+        "Retirada em loja: pronto em 24h — grátis.",
       ] },
       H("Rastreamento"),
       P("Assim que o pedido é despachado, você recebe o código de rastreio por e-mail. Também dá para acompanhar em “Rastrear pedido”."),

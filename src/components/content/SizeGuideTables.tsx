@@ -1,6 +1,7 @@
 const CLOTHING = {
   head: ["Tamanho", "Busto (cm)", "Cintura (cm)", "Quadril (cm)", "BR"],
   rows: [
+    ["XPP", "74–77", "56–59", "82–85", "32"],
     ["PP", "78–82", "60–64", "86–90", "34"],
     ["P", "83–87", "65–69", "91–95", "36"],
     ["M", "88–93", "70–75", "96–101", "38–40"],
@@ -9,15 +10,16 @@ const CLOTHING = {
   ],
 };
 
-const SHOES = {
-  head: ["BR", "Comprimento do pé (cm)", "EU", "US"],
+/** Denim and tailored trousers are sold by BR number, not letter. */
+const NUMERIC = {
+  head: ["BR", "Cintura (cm)", "Quadril (cm)", "Equivale a"],
   rows: [
-    ["34", "22,0", "35", "5"],
-    ["35", "22,8", "36", "6"],
-    ["36", "23,5", "37", "7"],
-    ["37", "24,3", "38", "8"],
-    ["38", "25,0", "39", "9"],
-    ["39", "25,8", "40", "10"],
+    ["34", "60–63", "86–89", "PP"],
+    ["36", "64–67", "90–94", "P"],
+    ["38", "68–71", "95–99", "M"],
+    ["40", "72–76", "100–103", "M"],
+    ["42", "77–81", "104–108", "G"],
+    ["44", "82–87", "109–113", "GG"],
   ],
 };
 
@@ -58,8 +60,8 @@ export function SizeGuideTables() {
         <Table data={CLOTHING} />
       </section>
       <section>
-        <h2 className="label-lg mb-4">Sapatos</h2>
-        <Table data={SHOES} />
+        <h2 className="label-lg mb-4">Denim e calças numeradas</h2>
+        <Table data={NUMERIC} />
       </section>
       <section>
         <h2 className="label-lg mb-4">Como medir</h2>
@@ -67,7 +69,7 @@ export function SizeGuideTables() {
           <li>Busto: na parte mais larga, com a fita paralela ao chão.</li>
           <li>Cintura: na parte mais fina do tronco, geralmente acima do umbigo.</li>
           <li>Quadril: na parte mais larga, com os pés juntos.</li>
-          <li>Pé: em pé, sobre uma folha, marque do calcanhar à ponta do dedo maior.</li>
+          <li>Entrepernas: da virilha até o tornozelo, para conferir o comprimento da calça.</li>
         </ul>
         <p className="mt-4 text-ink-muted">
           Na dúvida entre dois tamanhos, escolha o maior — a alfaiataria pode ser ajustada sem custo

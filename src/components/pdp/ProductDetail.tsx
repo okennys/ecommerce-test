@@ -7,7 +7,14 @@ import type { StoreProduct } from "@/types/medusa";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/dictionary";
 import { formatPrice } from "@/lib/format";
-import { productColours, productFromPrice } from "@/lib/data/products";
+import {
+  productColours,
+  namedColours,
+  productFromPrice,
+  productCompareAt,
+  productDetails,
+  discountPercent,
+} from "@/lib/data/products";
 import { useCart } from "@/context/CartProvider";
 import { Breadcrumb, type Crumb } from "@/components/ui/Breadcrumb";
 import { PlusIcon } from "@/components/ui/icons";
@@ -21,6 +28,7 @@ export function ProductDetail({
   crumbs: Crumb[];
 }) {
   const colours = productColours(product);
+  const swatches = namedColours(product);
   const { addItem, openCart } = useCart();
 
   const [colourName, setColourName] = useState(colours[0]?.name ?? "");
@@ -43,7 +51,9 @@ export function ProductDetail({
   }, [product.variants, colourName]);
 
   const price = productFromPrice(product);
-  const materia = (product.metadata?.materia as string) ?? "";
+  const compareAt = productCompareAt(product);
+  const details = productDetails(product);
+  const sku = (product.metadata?.sku as string) ?? "";
 
   function handleAdd() {
     const chosenSize = isOneSize ? "Único" : size;
@@ -108,17 +118,33 @@ export function ProductDetail({
             <h1 className="font-display text-[clamp(1.4rem,2.4vw,1.9rem)] font-medium leading-snug">
               {product.title}
             </h1>
-            <p className="mt-3 text-ink">{formatPrice(price.amount, price.currency)}</p>
+            {product.subtitle && (
+              <p className="mt-2 text-ink-muted">{product.subtitle}</p>
+            )}
+
+            <p className="mt-3 flex flex-wrap items-baseline gap-x-3 text-ink">
+              {compareAt && (
+                <span className="text-ink-muted line-through">
+                  {formatPrice(compareAt, price.currency)}
+                </span>
+              )}
+              <span>{formatPrice(price.amount, price.currency)}</span>
+              {compareAt && (
+                <span className="label bg-ink px-2 py-1 text-on-dark">
+                  −{discountPercent(product)}%
+                </span>
+              )}
+            </p>
             <p className="label mt-1 text-ink-muted">{t.common.taxIncluded}</p>
 
             {/* colour */}
-            {colours.length > 1 && (
+            {swatches.length > 1 && (
               <div className="mt-8">
                 <p className="label">
                   Cor: <span className="text-ink-muted">{colourName}</span>
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
-                  {colours.map((c) => (
+                  {swatches.map((c) => (
                     <button
                       key={c.name}
                       type="button"
@@ -202,15 +228,23 @@ export function ProductDetail({
             <div className="mt-10 divide-y divide-line border-y border-line">
               <Accordion title="Descrição" defaultOpen>
                 <p>{product.description}</p>
+                {details.length > 0 && (
+                  <ul className="mt-3 list-disc space-y-1 pl-5 marker:text-ink-muted">
+                    {details.map((d) => (
+                      <li key={d}>{d}</li>
+                    ))}
+                  </ul>
+                )}
               </Accordion>
               <Accordion title="Composição e cuidados">
-                <p>{materia}. Feito no ateliê JU RUDOLPH, em São Paulo.</p>
-                <p className="mt-2 text-ink-muted">
-                  Limpeza profissional a seco. Guarde em local seco, ao abrigo da luz direta.
+                <p>
+                  Siga sempre a etiqueta interna da peça. Na dúvida, opte por limpeza profissional
+                  a seco e guarde em local seco, ao abrigo da luz direta.
                 </p>
+                {sku && <p className="label mt-3 text-ink-muted">Referência {sku}</p>}
               </Accordion>
               <Accordion title="Entrega e devoluções">
-                <p>Entrega padrão em 3 a 7 dias úteis. Frete grátis acima de {formatPrice(1500)}.</p>
+                <p>Entrega padrão em 3 a 7 dias úteis. Frete grátis acima de {formatPrice(500)}.</p>
                 <p className="mt-2 text-ink-muted">
                   Primeira troca grátis, em até 30 dias. Ver{" "}
                   <Link href="/ajuda/trocas" className="underline">

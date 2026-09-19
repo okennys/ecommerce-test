@@ -1,11 +1,13 @@
 import type { StoreCollection } from "@/types/medusa";
 
 /**
+ * Editorial groupings that sit above the category tree. The catalogue itself has
+ * no seasons yet — these are curations applied at ingest time (see
+ * `scripts/ingest-produtos.mjs`).
+ *
  * SWAP POINT: `store.collection.list()` from Medusa.
  */
 export const collections: StoreCollection[] = [
-  { id: "col_oi26", title: "Outono Inverno 26", handle: "outono-inverno-26" },
-  { id: "col_pre", title: "Pré-coleção", handle: "pre-colecao" },
   { id: "col_icones", title: "Ícones", handle: "icones" },
 ];
 

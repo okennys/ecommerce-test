@@ -1,7 +1,6 @@
 import { SiteHeader } from "@/components/layout/SiteHeader";
 import { SiteFooter } from "@/components/layout/SiteFooter";
 import { CartDrawer } from "@/components/layout/CartDrawer";
-import { RegionModal } from "@/components/layout/RegionModal";
 
 /**
  * Storefront chrome. Everything the customer browses lives under this group;
@@ -21,7 +20,6 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <SiteFooter />
 
       <CartDrawer />
-      <RegionModal />
     </>
   );
 }

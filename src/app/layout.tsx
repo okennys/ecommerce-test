@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Bodoni_Moda } from "next/font/google";
 import "./globals.css";
 import { t } from "@/lib/dictionary";
-import { UIProvider } from "@/context/UIProvider";
 import { CartProvider } from "@/context/CartProvider";
 import { CheckoutProvider } from "@/context/CheckoutProvider";
 
@@ -20,13 +19,13 @@ export const metadata: Metadata = {
     template: `%s — ${t.brand.name}`,
   },
   description:
-    "JU RUDOLPH — moda autoral brasileira. Coleção Outono Inverno 26, alfaiataria, bolsas e acessórios.",
+    "JU RUDOLPH — moda autoral brasileira. Vestidos, alfaiataria, conjuntos, denim e joias.",
   openGraph: {
     type: "website",
     locale: "pt_BR",
     siteName: t.brand.name,
     title: `${t.brand.name} — ${t.brand.tagline}`,
-    description: "Moda autoral brasileira. Coleção Outono Inverno 26.",
+    description: "Moda autoral brasileira, feita no ateliê em São Paulo.",
   },
   robots: { index: false, follow: false }, // pre-launch
 };
@@ -42,11 +41,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           {t.a11y.skipToContent}
         </a>
 
-        <UIProvider>
-          <CartProvider>
-            <CheckoutProvider>{children}</CheckoutProvider>
-          </CartProvider>
-        </UIProvider>
+        <CartProvider>
+          <CheckoutProvider>{children}</CheckoutProvider>
+        </CartProvider>
       </body>
     </html>
   );
