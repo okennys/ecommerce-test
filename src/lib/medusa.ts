@@ -1,23 +1,38 @@
+import Medusa from "@medusajs/js-sdk";
+
 /**
- * Medusa client — NOT wired yet.
+ * Medusa Store API client.
  *
- * Milestone 1 renders entirely from local fixtures in `src/lib/data/*`. When the
- * backend team hands over a URL:
- *   1. `npm i @medusajs/js-sdk @medusajs/types`
- *   2. set MEDUSA_BACKEND_URL (+ NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY) in .env
- *   3. implement getMedusaClient() below with `new Medusa({ baseUrl, publishableKey })`
- *   4. replace the fixture reads in `src/lib/data/*` with `client.store.*` calls
- *   5. delete `src/types/medusa.ts` and import from `@medusajs/types`
+ * The backend is the source of truth for the catalogue (see
+ * `scripts/seed-medusa.mjs` for how it gets there). Everything below runs on the
+ * server — `MEDUSA_BACKEND_URL` is not a `NEXT_PUBLIC_` var, so the browser
+ * never talks to Medusa directly for catalogue reads.
  */
 
-export const MEDUSA_BACKEND_URL = process.env.MEDUSA_BACKEND_URL ?? "";
+export const MEDUSA_BACKEND_URL =
+  process.env.MEDUSA_BACKEND_URL ?? process.env.NEXT_PUBLIC_MEDUSA_BACKEND_URL ?? "";
+
+export const MEDUSA_PUBLISHABLE_KEY =
+  process.env.MEDUSA_PUBLISHABLE_KEY ?? process.env.NEXT_PUBLIC_MEDUSA_PUBLISHABLE_KEY ?? "";
+
+/** Region whose prices and currency the storefront shows. */
+export const MEDUSA_REGION_ID = process.env.MEDUSA_REGION_ID ?? "";
 
 export function isMedusaConfigured(): boolean {
-  return MEDUSA_BACKEND_URL.length > 0;
+  return Boolean(MEDUSA_BACKEND_URL && MEDUSA_PUBLISHABLE_KEY);
 }
 
-export function getMedusaClient(): never {
-  throw new Error(
-    "Medusa backend is not connected yet. Milestone 1 uses local fixtures — see src/lib/medusa.ts for the wiring steps.",
-  );
+let client: Medusa | null = null;
+
+export function getMedusaClient(): Medusa {
+  if (!isMedusaConfigured()) {
+    throw new Error(
+      "Medusa não está configurado. Defina MEDUSA_BACKEND_URL e MEDUSA_PUBLISHABLE_KEY em .env.local (veja .env.example).",
+    );
+  }
+  client ??= new Medusa({
+    baseUrl: MEDUSA_BACKEND_URL,
+    publishableKey: MEDUSA_PUBLISHABLE_KEY,
+  });
+  return client;
 }

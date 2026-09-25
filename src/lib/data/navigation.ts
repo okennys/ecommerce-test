@@ -1,13 +1,16 @@
+import { CATEGORY_NAMES } from "./products";
+import { giftLabel, type Catalog } from "./catalog";
+
 /**
  * Navigation model — drives BOTH the desktop mega-menu and the mobile nav.
  * Structure mirrors the reference (ysl.com/pt-br): a few primary entries, each
  * opening a full-width panel of purely typographic columns.
  *
- * SWAP POINT: once categories/collections come from Medusa, generate this tree
- * from `store.category.list()` + `store.collection.list()` instead of hardcoding.
+ * `buildNavigation()` is pure and takes the catalogue Medusa returned, so the
+ * menu can never offer a category the backend no longer carries. The server
+ * layout resolves it once and hands the result to the header and footer, which
+ * are client components.
  */
-import { stockedCategories, giftCeiling } from "./catalog";
-import { CATEGORY_NAMES } from "./products";
 
 export interface NavLink {
   label: string;
@@ -28,11 +31,13 @@ export interface NavItem {
   columns?: NavColumn[];
 }
 
-/**
- * Category columns are built from what the shop actually has online
- * (`stockedCategories`), so taking a category offline in `products.csv` removes
- * it from the menu too instead of leaving a dead link.
- */
+export interface Navigation {
+  primary: NavItem[];
+  utility: NavLink[];
+  footer: NavColumn[];
+  social: NavLink[];
+}
+
 const UPPER = ["vestidos", "blusas", "conjuntos", "macacoes", "casacos"];
 const LOWER = ["calcas", "saias", "denim"];
 
@@ -40,74 +45,6 @@ const linkFor = (handle: string): NavLink => ({
   label: CATEGORY_NAMES[handle] ?? handle,
   href: `/mulher/${handle}`,
 });
-
-const categoryColumn = (title: string, handles: string[]): NavColumn[] => {
-  const links = handles.filter((h) => stockedCategories.includes(h)).map(linkFor);
-  return links.length ? [{ title, href: "/mulher", links }] : [];
-};
-
-const giftLabel = `Até R$ ${giftCeiling.toLocaleString("pt-BR")}`;
-const giftHref = `/presentes/ate-${giftCeiling}`;
-
-const womenColumns: NavColumn[] = [
-  {
-    title: "Novidades",
-    href: "/mulher/novidades",
-    links: [
-      { label: "Selecionados pela Ju", href: "/highlights/selecao" },
-      { label: "Ícones", href: "/highlights/icones" },
-      { label: "Sale", href: "/sale" },
-      { label: "Ver tudo", href: "/mulher" },
-    ],
-  },
-  ...categoryColumn("Roupas", UPPER),
-  ...categoryColumn("Calças e saias", LOWER),
-  {
-    title: "Presentes",
-    href: "/presentes",
-    links: [
-      ...(stockedCategories.includes("joias") ? [linkFor("joias")] : []),
-      { label: "Novidades para presentear", href: "/presentes/novidades" },
-      { label: giftLabel, href: giftHref },
-      { label: "Cartão-presente", href: "/presentes/cartao" },
-    ],
-  },
-];
-
-const highlightsColumns: NavColumn[] = [
-  {
-    title: "Destaques",
-    href: "/highlights",
-    links: [
-      { label: "Selecionados pela Ju", href: "/highlights/selecao" },
-      { label: "Ícones", href: "/highlights/icones" },
-      { label: "Novidades", href: "/mulher/novidades" },
-    ],
-  },
-  {
-    title: "Sale",
-    href: "/sale",
-    links: [
-      { label: "Tudo em promoção", href: "/sale" },
-      { label: giftLabel, href: giftHref },
-    ],
-  },
-  {
-    title: "Presentes",
-    href: "/presentes",
-    links: [
-      { label: "Novidades para presentear", href: "/presentes/novidades" },
-      { label: giftLabel, href: giftHref },
-      { label: "Cartão-presente", href: "/presentes/cartao" },
-    ],
-  },
-];
-
-export const primaryNav: NavItem[] = [
-  { id: "highlights", label: "Highlights", href: "/highlights", columns: highlightsColumns },
-  { id: "mulher", label: "Mulher", href: "/mulher", columns: womenColumns },
-  { id: "sale", label: "Sale", href: "/sale" },
-];
 
 export const utilityNav: NavLink[] = [
   { label: "A Marca", href: "/a-marca" },
@@ -166,3 +103,76 @@ export const socialLinks: NavLink[] = [
   { label: "Pinterest", href: "https://pinterest.com" },
   { label: "YouTube", href: "https://youtube.com" },
 ];
+
+export function buildNavigation(catalog: Catalog): Navigation {
+  const { stockedCategories, giftCeiling } = catalog;
+
+  const categoryColumn = (title: string, handles: string[]): NavColumn[] => {
+    const links = handles.filter((h) => stockedCategories.includes(h)).map(linkFor);
+    return links.length ? [{ title, href: "/mulher", links }] : [];
+  };
+
+  const gift = { label: `Até ${giftLabel(giftCeiling)}`, href: `/presentes/ate-${giftCeiling}` };
+
+  const womenColumns: NavColumn[] = [
+    {
+      title: "Novidades",
+      href: "/mulher/novidades",
+      links: [
+        { label: "Selecionados pela Ju", href: "/highlights/selecao" },
+        { label: "Ícones", href: "/highlights/icones" },
+        { label: "Sale", href: "/sale" },
+        { label: "Ver tudo", href: "/mulher" },
+      ],
+    },
+    ...categoryColumn("Roupas", UPPER),
+    ...categoryColumn("Calças e saias", LOWER),
+    {
+      title: "Presentes",
+      href: "/presentes",
+      links: [
+        ...(stockedCategories.includes("joias") ? [linkFor("joias")] : []),
+        { label: "Novidades para presentear", href: "/presentes/novidades" },
+        gift,
+        { label: "Cartão-presente", href: "/presentes/cartao" },
+      ],
+    },
+  ];
+
+  const highlightsColumns: NavColumn[] = [
+    {
+      title: "Destaques",
+      href: "/highlights",
+      links: [
+        { label: "Selecionados pela Ju", href: "/highlights/selecao" },
+        { label: "Ícones", href: "/highlights/icones" },
+        { label: "Novidades", href: "/mulher/novidades" },
+      ],
+    },
+    {
+      title: "Sale",
+      href: "/sale",
+      links: [{ label: "Tudo em promoção", href: "/sale" }, gift],
+    },
+    {
+      title: "Presentes",
+      href: "/presentes",
+      links: [
+        { label: "Novidades para presentear", href: "/presentes/novidades" },
+        gift,
+        { label: "Cartão-presente", href: "/presentes/cartao" },
+      ],
+    },
+  ];
+
+  return {
+    primary: [
+      { id: "highlights", label: "Highlights", href: "/highlights", columns: highlightsColumns },
+      { id: "mulher", label: "Mulher", href: "/mulher", columns: womenColumns },
+      { id: "sale", label: "Sale", href: "/sale" },
+    ],
+    utility: utilityNav,
+    footer: footerNav,
+    social: socialLinks,
+  };
+}

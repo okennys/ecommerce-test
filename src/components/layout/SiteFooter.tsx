@@ -1,9 +1,10 @@
 import Link from "next/link";
-import { footerNav, socialLinks } from "@/lib/data/navigation";
+import type { Navigation } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { NewsletterForm } from "./NewsletterForm";
 
-export function SiteFooter() {
+export function SiteFooter({ nav }: { nav: Navigation }) {
+  const { footer: footerNav, social: socialLinks } = nav;
   const year = new Date().getFullYear();
 
   return (

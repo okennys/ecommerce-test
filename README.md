@@ -1,92 +1,66 @@
-# JU RUDOLPH — deploy de teste
+# JU RUDOLPH — storefront
 
-**Cópia congelada para aprovação.** É uma preview navegável do storefront
-(frontend) para o cliente clicar e revisar **estrutura, navegação e fluxos**.
-Sobe no **Vercel** só para este teste — o projeto de produção vai para a
-**AWS Amplify**.
-
-> Sem backend e sem pagamento real. Backend (Medusa JS + Stripe/Bling), estoque
-> ao vivo e área de conta entram na **etapa 2**, no projeto principal. Alterações
-> pedidas pelo cliente são portadas de volta manualmente — não editar direto
-> aqui esperando que volte.
-
-Referência de design: `ysl.com/pt-br`.
-
-## O catálogo é real
-
-São **38 produtos** — exatamente os que estão no ar hoje no site da marca, de
-acordo com o `products.csv` exportado da plataforma dela. Nome, preço, SKU,
-descrição, tamanhos, cores e fotos são os de verdade (532 fotos, ~28 MB em
-`public/media/produtos/`).
-
-Quando a lista mudar, basta reexportar o CSV e rodar o ingestor no projeto
-principal — categorias sem produto somem sozinhas do menu.
-
-O que ainda é placeholder: as imagens de campanha em `public/media/ph/` (ver
-`CREDITS.md` lá) e o wordmark.
-
-**Estoque não está modelado** — todo tamanho aparece como disponível. Entra na
-etapa 2, junto com a Medusa.
+High-end fashion e-commerce **frontend**. Backend (Medusa JS + Stripe/Bling) is
+built separately and connected later. Design reference: `ysl.com/pt-br`
+(analysis frames in `reference/`).
 
 ## Stack
 
-- **Next.js 16** (App Router) · **React 19** · **TypeScript**
-- **Tailwind v4** — tokens em `src/app/globals.css` (`@theme`)
-- Dados no formato da Medusa v2 Store API (`src/lib/data/*`, `src/types/medusa.ts`)
+- **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
+- **Tailwind v4** — tokens in `src/app/globals.css` (`@theme`)
+- Local **fixture data** shaped like the Medusa v2 Store API (`src/lib/data/*`,
+  `src/types/medusa.ts`)
+- Deploy target: **AWS Amplify Hosting** (Next.js SSR) — see `docs/deploy-amplify.md`
 
-## Rodar localmente
+## Run
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build
+npm run dev          # http://localhost:3000
+npm run build        # production build (Turbopack) — run before pushing
 npm run lint
 ```
 
-## Subir no Vercel
+## Milestone 1 scope
 
-Não precisa de configuração nem variável de ambiente. O projeto já está ligado a
-este repositório — **cada push na `main` gera um deploy novo**. A preview sai com
-`noindex`.
+Design system + app shell + homepage:
 
-## O que dá para testar
+- `SiteHeader` — transparent over the hero, solid on scroll; desktop mega-menu,
+  mobile full-screen nav, slide-down search
+- `SiteFooter` — link columns, newsletter (client validation), socials, region
+- `CartDrawer` — right slide-over, `localStorage`-backed `CartProvider`
+- `RegionModal` — country/language picker
+- Homepage — dark wordmark-reveal hero + editorial blocks + product rails
 
-- **Home** — hero com scroll empilhado, dois painéis de categoria e os trilhos
-  de Novidades e Ícones
-- **PLP** — `/mulher`, `/mulher/vestidos`, `/mulher/blusas`, `/mulher/calcas`,
-  `/sale`, `/highlights`, `/presentes` … com filtro (tamanho / cor / preço),
-  ordenação, densidade da grade e "carregar mais"
-- **PDP** — `/produtos/[handle]` com troca de cor e tamanho, "adicionar à
-  sacola" e galeria com zoom
-- **Sale** — preço riscado e selo de desconto no card e na página do produto
-- **Sacola** — `/carrinho` + gaveta lateral
-- **Checkout** — `/checkout` → entrega → pagamento → revisão → confirmação
-  (fluxo completo, simulado)
-- **Conteúdo** — A Marca, Serviços, Ajuda (guia de tamanhos, rastrear pedido),
-  Lojas, Legal, Cartão-presente
+Not built yet: PLP, PDP, checkout, account, editorial/content pages. Links to
+those paths render the branded `not-found` page for now.
 
-## Categorias
+## Structure
 
-Vestidos · Blusas e camisas · Conjuntos · Calças · Saias · Casacos e jaquetas ·
-Macacões
-
-A árvore é montada a partir dos produtos: só aparece categoria que tem peça.
-
-## Enquadramento das fotos
-
-O ensaio mistura três proporções — 4:5 (still no fundo claro), 2:3 (modelo) e
-9:16 (frame de vídeo). Cada tela lida com isso de um jeito: o PDP mostra cada
-foto na proporção original, a grade mantém 4:5 ancorando no topo (o corte pega a
-barra, nunca o rosto) e os painéis da home são 2:3, que é a proporção das fotos
-de modelo.
+```
+src/
+  app/            layout, page (home), globals.css, not-found
+  components/
+    layout/       SiteHeader, MegaMenu, MobileNav, SearchPanel, SiteFooter,
+                  NewsletterForm, RegionTrigger, RegionModal, CartDrawer
+    home/         HeroFilm, EditorialBlock, ProductRail, CampaignSplit
+    ui/           Logo, Button, TextCta, Reveal, icons
+  context/        CartProvider, UIProvider
+  lib/
+    data/         navigation, products, collections, regions, media
+    dictionary.ts pt-BR copy (single source)
+    medusa.ts     client stub + wiring instructions
+    format.ts, cn.ts, useScrollLock.ts
+  types/medusa.ts minimal Store API type subset
+```
 
 ## Swap points (grep `SWAP POINT`)
 
-| O quê | Onde |
+| What | Where |
 |---|---|
-| Wordmark placeholder → logo real | `src/components/ui/Logo.tsx` |
-| Bodoni Moda → tipografia da marca | `src/app/layout.tsx`, `globals.css` |
-| Imagens de campanha → fotos reais | `public/media/ph/` (manter os nomes) |
-| Fixtures → Medusa ao vivo | `src/lib/medusa.ts`, `src/lib/data/*`, `src/types/medusa.ts` |
-| Checkout simulado → Medusa + pagamento | `src/context/CheckoutProvider.tsx`, `src/app/(checkout)/*` |
-| `typedRoutes` reativar | `next.config.ts` |
+| Placeholder wordmark → real logo | `src/components/ui/Logo.tsx` |
+| Bodoni Moda → brand typefaces | `src/app/layout.tsx`, `globals.css` |
+| Grayscale picsum → real imagery | `src/lib/data/media.ts` + call sites |
+| Hero film | `public/media/` + `src/components/home/HeroFilm.tsx` |
+| Fixtures → live Medusa | `src/lib/medusa.ts`, `src/lib/data/*`, `src/types/medusa.ts` |
+| `typedRoutes` re-enable | `next.config.ts` (after routes exist) |

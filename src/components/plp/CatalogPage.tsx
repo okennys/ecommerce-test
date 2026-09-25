@@ -1,7 +1,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import type { CatalogNode } from "@/lib/data/catalog";
+import type { StoreProduct } from "@/types/medusa";
+import type { Catalog, CatalogNode } from "@/lib/data/catalog";
 import { getProductsForNode, childNodes } from "@/lib/data/catalog";
 import {
   filterProducts,
@@ -19,8 +20,18 @@ const PAGE_SIZE = 12;
 
 type SP = Record<string, string | string[] | undefined>;
 
-export function CatalogPage({ node, searchParams }: { node: CatalogNode; searchParams: SP }) {
-  const base = getProductsForNode(node);
+export function CatalogPage({
+  node,
+  catalog,
+  products,
+  searchParams,
+}: {
+  node: CatalogNode;
+  catalog: Catalog;
+  products: StoreProduct[];
+  searchParams: SP;
+}) {
+  const base = getProductsForNode(products, node);
   const facets = getFacets(base);
   const p = plpParamsFromRecord(searchParams);
 
@@ -34,7 +45,7 @@ export function CatalogPage({ node, searchParams }: { node: CatalogNode; searchP
   const shown = Math.min(sorted.length, p.view * PAGE_SIZE);
   const visible = sorted.slice(0, shown);
 
-  const children = childNodes(node);
+  const children = childNodes(catalog, node);
 
   return (
     <div>

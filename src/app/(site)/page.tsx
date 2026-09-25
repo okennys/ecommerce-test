@@ -4,7 +4,9 @@ import { ProductRail } from "@/components/home/ProductRail";
 import { CampaignSplit } from "@/components/home/CampaignSplit";
 import { ph } from "@/lib/data/media";
 import { t } from "@/lib/dictionary";
-import { products, productTags, getProductsByCollection, getProduct } from "@/lib/data/products";
+import type { StoreProduct } from "@/types/medusa";
+import { byTag, byCollection, findProduct } from "@/lib/data/products";
+import { getProducts } from "@/lib/data/catalogue";
 
 /**
  * The catalogue shoots every piece twice: a still on a pale backdrop, then the
@@ -12,17 +14,21 @@ import { products, productTags, getProductsByCollection, getProduct } from "@/li
  * campaign bands want — and those are 2:3, which is the ratio CampaignSplit
  * uses, so the shot lands uncropped.
  */
-function modelShot(handle: string, fallback: string): string {
-  const images = getProduct(handle)?.images ?? [];
+function modelShot(products: StoreProduct[], handle: string, fallback: string): string {
+  const images = findProduct(products, handle)?.images ?? [];
   const twoByThree = images.find(
     (i) => i.width && i.height && Math.abs(i.height / i.width - 1.5) < 0.05,
   );
   return twoByThree?.url ?? images[1]?.url ?? images[0]?.url ?? fallback;
 }
 
-export default function HomePage() {
-  const season = products.filter((p) => productTags(p).includes("novidade")).slice(0, 4);
-  const icons = getProductsByCollection("icones").slice(0, 4);
+// Next needs a literal here — keep in sync with CATALOGUE_REVALIDATE.
+export const revalidate = 300;
+
+export default async function HomePage() {
+  const products = await getProducts();
+  const season = byTag(products, "novidade").slice(0, 4);
+  const icons = byCollection(products, "icones").slice(0, 4);
 
   return (
     <>
@@ -53,13 +59,13 @@ export default function HomePage() {
       <CampaignSplit
         panels={[
           {
-            src: modelShot("vestido-rafa", ph("look-02")),
+            src: modelShot(products, "vestido-rafa", ph("look-02")),
             alt: "Vestidos JU RUDOLPH",
             title: "Vestidos",
             cta: { label: "Ver", href: "/mulher/vestidos" },
           },
           {
-            src: modelShot("conjunto-leticia", ph("split-mulher")),
+            src: modelShot(products, "conjunto-leticia", ph("split-mulher")),
             alt: "Conjuntos JU RUDOLPH",
             title: "Conjuntos",
             cta: { label: "Descobrir", href: "/mulher/conjuntos" },

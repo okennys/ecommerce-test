@@ -8,11 +8,10 @@ import { cn } from "@/lib/cn";
 import { formatPrice } from "@/lib/format";
 import { useScrollLock } from "@/lib/useScrollLock";
 import { useCart } from "@/context/CartProvider";
-import { products } from "@/lib/data/products";
 import { CloseIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
 
 export function CartDrawer() {
-  const { items, count, subtotal, currency, isOpen, closeCart, updateQuantity, removeItem, addItem } =
+  const { items, count, subtotal, currency, isOpen, closeCart, updateQuantity, removeItem } =
     useCart();
 
   useScrollLock(isOpen);
@@ -23,22 +22,6 @@ export function CartDrawer() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, [isOpen, closeCart]);
-
-  // DEV ONLY — lets you populate the drawer to check the full state.
-  const addSample = () => {
-    const p = products[0];
-    const v = p.variants[1] ?? p.variants[0];
-    addItem({
-      product_id: p.id,
-      product_handle: p.handle,
-      variant_id: v.id,
-      title: p.title,
-      variant_title: v.title,
-      thumbnail: p.thumbnail,
-      unit_price: v.calculated_price?.calculated_amount ?? 0,
-      currency_code: v.calculated_price?.currency_code ?? "BRL",
-    });
-  };
 
   return (
     <div
@@ -84,15 +67,6 @@ export function CartDrawer() {
           <div className="flex flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
             <p className="label">{t.cart.empty}</p>
             <p className="label text-ink-muted">{t.cart.emptyHint}</p>
-            {process.env.NODE_ENV === "development" && (
-              <button
-                type="button"
-                onClick={addSample}
-                className="label mt-6 border border-line px-4 py-2 text-ink-muted hover:text-ink"
-              >
-                + item de teste (dev)
-              </button>
-            )}
           </div>
         ) : (
           <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">

@@ -1,122 +1,48 @@
-import type { StoreProduct, StoreProductVariant } from "@/types/medusa";
-import {
-  SOURCES,
-  CATEGORY_NAMES,
-  type SourceProduct,
-  type SourceImage,
-} from "./products.source";
+import type { StoreProduct } from "@/types/medusa";
 
 /**
- * Catalogue built from the client's real product export (see
- * `scripts/ingest-produtos.mjs`). Shapes match the Medusa v2 Store API so later
- * milestones can swap `store.product.list()` in without touching components.
+ * Pure helpers over a product list.
  *
- * Inventory is deliberately not modelled yet — every variant reads as available
- * until Medusa owns stock in etapa 2.
- *
- * SWAP POINT: replace this whole module with real Medusa calls once
- * MEDUSA_BACKEND_URL is wired (see src/lib/medusa.ts). `metadata.colours`
- * (per-colour image sets) maps onto Medusa variant images / option values.
+ * The list itself comes from Medusa — see `catalogue.ts`. Nothing here touches
+ * the network or module-level state, so both server components and client
+ * components can use it on data they were handed.
  */
 
-export { CATEGORY_NAMES };
-
-const IN_STOCK = 10;
+export interface ProductImage {
+  url: string;
+  /** intrinsic size of the file — the shoot mixes 4:5, 2:3 and 9:16 */
+  w: number;
+  h: number;
+}
 
 export interface ProductColour {
   name: string;
   hex: string;
-  images: SourceImage[];
+  sku?: string;
+  images: ProductImage[];
 }
 
-function make(s: SourceProduct): StoreProduct {
-  const colours: ProductColour[] = s.colours.map((c) => ({
-    name: c.name,
-    hex: c.hex,
-    images: c.images,
-  }));
+/**
+ * Display names and menu order for the categories the brand can carry. Medusa
+ * is authoritative for which ones exist and what they are called; this is the
+ * ordering, plus a label fallback.
+ */
+export const CATEGORY_NAMES: Record<string, string> = {
+  vestidos: "Vestidos",
+  blusas: "Blusas e camisas",
+  conjuntos: "Conjuntos",
+  calcas: "Calças",
+  denim: "Denim",
+  saias: "Saias",
+  casacos: "Casacos e jaquetas",
+  macacoes: "Macacões",
+  joias: "Joias",
+};
 
-  const images = colours[0].images.map((img, i) => ({
-    id: `${s.handle}-img-${i}`,
-    url: img.url,
-    rank: i,
-    width: img.w,
-    height: img.h,
-  }));
-
-  const variants: StoreProductVariant[] = [];
-  s.colours.forEach((c, ci) => {
-    s.sizes.forEach((size) => {
-      variants.push({
-        id: `${s.handle}-v-${ci}-${size}`,
-        title: `${size} / ${c.name}`,
-        sku: `${c.sku}-${size}`,
-        options: { Tamanho: size, Cor: c.name },
-        inventory_quantity: IN_STOCK,
-        calculated_price: {
-          calculated_amount: s.price,
-          original_amount: s.compareAt,
-          currency_code: "BRL",
-        },
-      });
-    });
-  });
-
-  return {
-    id: `prod_${s.handle}`,
-    title: s.title,
-    handle: s.handle,
-    subtitle: s.subtitle,
-    description: s.description ?? s.subtitle,
-    status: "published",
-    thumbnail: colours[0].images[0].url,
-    images,
-    options: [
-      {
-        id: `${s.handle}-o-size`,
-        title: "Tamanho",
-        values: s.sizes.map((v) => ({ id: `${s.handle}-s-${v}`, value: v })),
-      },
-      {
-        id: `${s.handle}-o-colour`,
-        title: "Cor",
-        values: colours.map((c) => ({ id: `${s.handle}-c-${c.name}`, value: c.name })),
-      },
-    ],
-    variants,
-    collection_id: s.tags.includes("icone") ? "col_icones" : undefined,
-    categories: [
-      {
-        id: `cat_${s.category}`,
-        handle: s.category,
-        name: CATEGORY_NAMES[s.category] ?? s.category,
-      },
-    ],
-    metadata: {
-      colour: colours[0].name,
-      sku: s.sku,
-      tags: s.tags,
-      colours,
-      compareAt: s.compareAt,
-      details: s.details ?? [],
-    },
-  };
-}
-
-export const products: StoreProduct[] = SOURCES.map(make);
-export const allProducts = products;
+export const CATEGORY_ORDER = Object.keys(CATEGORY_NAMES);
 
 // ---------------------------------------------------------------------------
-// selectors & helpers
-
-export function getProduct(handle: string): StoreProduct | undefined {
-  return products.find((p) => p.handle === handle);
-}
-
-export function getProductsByCollection(collectionHandle: string): StoreProduct[] {
-  const id = `col_${collectionHandle.replace(/-/g, "")}`;
-  return products.filter((p) => p.collection_id === id);
-}
+// per-product accessors
 
 export function productTags(p: StoreProduct): string[] {
   return (p.metadata?.tags as string[] | undefined) ?? [];
@@ -132,7 +58,7 @@ export function productColours(p: StoreProduct): ProductColour[] {
 }
 
 /** Colour swatches worth showing — unnamed single colours are an artefact of the
- *  export, not a choice the shopper can make. */
+ *  import, not a choice the shopper can make. */
 export function namedColours(p: StoreProduct): ProductColour[] {
   const colours = productColours(p);
   return colours.length > 1 ? colours : colours.filter((c) => c.name !== "Única");
@@ -175,6 +101,21 @@ export function isInStock(product: StoreProduct): boolean {
   return product.variants.some((v) => (v.inventory_quantity ?? 0) > 0);
 }
 
+// ---------------------------------------------------------------------------
+// list selectors
+
+export function findProduct(list: StoreProduct[], handle: string): StoreProduct | undefined {
+  return list.find((p) => p.handle === handle);
+}
+
+export function byCollection(list: StoreProduct[], collectionHandle: string): StoreProduct[] {
+  return list.filter((p) => p.collection?.handle === collectionHandle);
+}
+
+export function byTag(list: StoreProduct[], tag: string): StoreProduct[] {
+  return list.filter((p) => productTags(p).includes(tag));
+}
+
 // ---- facets / filter / sort -------------------------------------------------
 
 export interface Facets {
@@ -194,8 +135,7 @@ function roundStop(n: number): number {
 
 /**
  * Price buckets that actually split the current list. A fixed ladder is useless
- * here — the catalogue runs from R$ 88 to R$ 5.300 and most categories sit in a
- * narrow band inside that.
+ * here — categories sit in narrow bands inside a wide overall range.
  */
 function priceStops(min: number, max: number): number[] {
   if (max <= min) return [];
@@ -278,40 +218,39 @@ export function sortProducts(list: StoreProduct[], key: SortKey): StoreProduct[]
   return out;
 }
 
-export function searchProducts(query: string): StoreProduct[] {
-  const q = query.trim().toLowerCase();
+const deaccent = (s: string) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+export function searchProducts(list: StoreProduct[], query: string): StoreProduct[] {
+  const q = query.trim();
   if (!q) return [];
-  return products.filter((p) => {
-    const hay = [
-      p.title,
-      p.subtitle,
-      ...(p.categories ?? []).map((c) => c.name),
-      ...namedColours(p).map((c) => c.name),
-    ]
-      .filter(Boolean)
-      .join(" ")
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
-      .toLowerCase();
-    return q
-      .normalize("NFD")
-      .replace(/[̀-ͯ]/g, "")
+  return list.filter((p) => {
+    const hay = deaccent(
+      [
+        p.title,
+        p.subtitle,
+        ...(p.categories ?? []).map((c) => c.name),
+        ...namedColours(p).map((c) => c.name),
+      ]
+        .filter(Boolean)
+        .join(" "),
+    );
+    return deaccent(q)
       .split(/\s+/)
       .every((term) => hay.includes(term));
   });
 }
 
-export function getRelated(product: StoreProduct, limit = 4): StoreProduct[] {
+export function getRelated(list: StoreProduct[], product: StoreProduct, limit = 4): StoreProduct[] {
   const cat = product.categories?.[0]?.handle;
   const price = productFromPrice(product).amount;
-  const pool = products.filter((p) => p.handle !== product.handle);
+  const pool = list.filter((p) => p.handle !== product.handle);
   const scored = pool
     .map((p) => {
       let score = 0;
       if (cat && hasCategory(p, cat)) score += 3;
       if (product.collection_id && p.collection_id === product.collection_id) score += 1;
       // nudge towards a comparable price bracket so a R$5.300 dress doesn't sit
-      // next to a R$88 bermuda
+      // next to a R$200 blouse
       const ratio = productFromPrice(p).amount / (price || 1);
       if (ratio > 0.5 && ratio < 2) score += 1;
       return { p, score };

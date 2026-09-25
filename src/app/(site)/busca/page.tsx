@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
 import { searchProducts } from "@/lib/data/products";
+import { getProducts } from "@/lib/data/catalogue";
 import { ProductGrid } from "@/components/plp/ProductGrid";
 import { SearchField } from "@/components/plp/SearchField";
 
 export const metadata: Metadata = { title: "Busca" };
+// Next needs a literal here — keep in sync with CATALOGUE_REVALIDATE.
+export const revalidate = 300;
 
 export default async function BuscaPage({
   searchParams,
@@ -12,7 +15,7 @@ export default async function BuscaPage({
 }) {
   const { q = "" } = await searchParams;
   const query = q.trim();
-  const results = query ? searchProducts(query) : [];
+  const results = query ? searchProducts(await getProducts(), query) : [];
 
   return (
     <div className="px-5 py-12 lg:px-gutter">
@@ -34,7 +37,7 @@ export default async function BuscaPage({
             <ProductGrid products={results} density={3} />
           ) : (
             <p className="py-16 text-center text-ink-muted">
-              Nada encontrado. Tente outro termo — “vestido”, “bolsa”, “alfaiataria”.
+              Nada encontrado. Tente outro termo — “vestido”, “lurex”, “alfaiataria”.
             </p>
           )
         ) : (

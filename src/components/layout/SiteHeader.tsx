@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { primaryNav, utilityNav } from "@/lib/data/navigation";
+import type { Navigation } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { cn } from "@/lib/cn";
 import { useCart } from "@/context/CartProvider";
@@ -16,7 +16,8 @@ import { SearchPanel } from "./SearchPanel";
 const OPEN_DELAY = 90;
 const CLOSE_DELAY = 180;
 
-export function SiteHeader() {
+export function SiteHeader({ nav }: { nav: Navigation }) {
+  const { primary: primaryNav, utility: utilityNav } = nav;
   const pathname = usePathname();
   const hasHeroRoute = pathname === "/";
 
@@ -238,7 +239,12 @@ export function SiteHeader() {
         )}
       />
 
-      <MobileNav open={mobileOpen} onClose={() => setMobileOpen(false)} />
+      <MobileNav
+        open={mobileOpen}
+        onClose={() => setMobileOpen(false)}
+        primaryNav={primaryNav}
+        utilityNav={utilityNav}
+      />
     </>
   );
 }

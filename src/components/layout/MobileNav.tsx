@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { primaryNav, utilityNav } from "@/lib/data/navigation";
+import type { NavItem, NavLink } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { cn } from "@/lib/cn";
 import { useScrollLock } from "@/lib/useScrollLock";
@@ -13,9 +13,13 @@ import { ChevronDownIcon, CloseIcon } from "@/components/ui/icons";
 export function MobileNav({
   open,
   onClose,
+  primaryNav,
+  utilityNav,
 }: {
   open: boolean;
   onClose: () => void;
+  primaryNav: NavItem[];
+  utilityNav: NavLink[];
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
 
