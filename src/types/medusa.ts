@@ -10,6 +10,9 @@ export interface StoreImage {
   id: string;
   url: string;
   rank?: number;
+  /** intrinsic size, so layouts can show the file whole instead of cropping */
+  width?: number;
+  height?: number;
 }
 
 export interface StoreProductOptionValue {

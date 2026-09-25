@@ -6,6 +6,8 @@
  * SWAP POINT: once categories/collections come from Medusa, generate this tree
  * from `store.category.list()` + `store.collection.list()` instead of hardcoding.
  */
+import { stockedCategories, giftCeiling } from "./catalog";
+import { CATEGORY_NAMES } from "./products";
 
 export interface NavLink {
   label: string;
@@ -26,6 +28,27 @@ export interface NavItem {
   columns?: NavColumn[];
 }
 
+/**
+ * Category columns are built from what the shop actually has online
+ * (`stockedCategories`), so taking a category offline in `products.csv` removes
+ * it from the menu too instead of leaving a dead link.
+ */
+const UPPER = ["vestidos", "blusas", "conjuntos", "macacoes", "casacos"];
+const LOWER = ["calcas", "saias", "denim"];
+
+const linkFor = (handle: string): NavLink => ({
+  label: CATEGORY_NAMES[handle] ?? handle,
+  href: `/mulher/${handle}`,
+});
+
+const categoryColumn = (title: string, handles: string[]): NavColumn[] => {
+  const links = handles.filter((h) => stockedCategories.includes(h)).map(linkFor);
+  return links.length ? [{ title, href: "/mulher", links }] : [];
+};
+
+const giftLabel = `Até R$ ${giftCeiling.toLocaleString("pt-BR")}`;
+const giftHref = `/presentes/ate-${giftCeiling}`;
+
 const womenColumns: NavColumn[] = [
   {
     title: "Novidades",
@@ -37,32 +60,15 @@ const womenColumns: NavColumn[] = [
       { label: "Ver tudo", href: "/mulher" },
     ],
   },
+  ...categoryColumn("Roupas", UPPER),
+  ...categoryColumn("Calças e saias", LOWER),
   {
-    title: "Roupas",
-    href: "/mulher",
+    title: "Presentes",
+    href: "/presentes",
     links: [
-      { label: "Vestidos", href: "/mulher/vestidos" },
-      { label: "Blusas e camisas", href: "/mulher/blusas" },
-      { label: "Conjuntos", href: "/mulher/conjuntos" },
-      { label: "Macacões", href: "/mulher/macacoes" },
-      { label: "Casacos e jaquetas", href: "/mulher/casacos" },
-    ],
-  },
-  {
-    title: "Calças e saias",
-    href: "/mulher",
-    links: [
-      { label: "Calças", href: "/mulher/calcas" },
-      { label: "Saias", href: "/mulher/saias" },
-      { label: "Denim", href: "/mulher/denim" },
-    ],
-  },
-  {
-    title: "Joias",
-    href: "/mulher/joias",
-    links: [
-      { label: "Presentes", href: "/presentes" },
-      { label: "Até R$ 500", href: "/presentes/ate-500" },
+      ...(stockedCategories.includes("joias") ? [linkFor("joias")] : []),
+      { label: "Novidades para presentear", href: "/presentes/novidades" },
+      { label: giftLabel, href: giftHref },
       { label: "Cartão-presente", href: "/presentes/cartao" },
     ],
   },
@@ -82,9 +88,8 @@ const highlightsColumns: NavColumn[] = [
     title: "Sale",
     href: "/sale",
     links: [
-      { label: "Vestidos", href: "/mulher/vestidos" },
-      { label: "Conjuntos", href: "/mulher/conjuntos" },
-      { label: "Até R$ 500", href: "/presentes/ate-500" },
+      { label: "Tudo em promoção", href: "/sale" },
+      { label: giftLabel, href: giftHref },
     ],
   },
   {
@@ -92,8 +97,7 @@ const highlightsColumns: NavColumn[] = [
     href: "/presentes",
     links: [
       { label: "Novidades para presentear", href: "/presentes/novidades" },
-      { label: "Joias", href: "/presentes/joias" },
-      { label: "Até R$ 500", href: "/presentes/ate-500" },
+      { label: giftLabel, href: giftHref },
       { label: "Cartão-presente", href: "/presentes/cartao" },
     ],
   },

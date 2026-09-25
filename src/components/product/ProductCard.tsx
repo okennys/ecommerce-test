@@ -27,6 +27,12 @@ export function ProductCard({
   const price = productFromPrice(product);
   const compareAt = productCompareAt(product);
   const [front, back] = product.images;
+
+  // The grid stays a tidy 4:5, but model frames (2:3) and video grabs (9:16)
+  // are taller than that — anchor them to the top so the crop takes the hem,
+  // never the face.
+  const anchor = (img?: { width?: number; height?: number }) =>
+    img?.width && img?.height && img.height / img.width > 1.26 ? "object-top" : "object-center";
   const colours = namedColours(product);
   const soldOut = !isInStock(product);
 
@@ -39,7 +45,7 @@ export function ProductCard({
           fill
           priority={priority}
           sizes={sizes}
-          className="object-cover transition-opacity duration-500 group-hover:opacity-0"
+          className={`object-cover ${anchor(front)} transition-opacity duration-500 group-hover:opacity-0`}
         />
         {back && (
           <Image
@@ -47,7 +53,7 @@ export function ProductCard({
             alt=""
             fill
             sizes={sizes}
-            className="object-cover opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+            className={`object-cover ${anchor(back)} opacity-0 transition-opacity duration-500 group-hover:opacity-100`}
           />
         )}
         {soldOut && (

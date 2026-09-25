@@ -9,11 +9,15 @@ import { products, productTags, getProductsByCollection, getProduct } from "@/li
 /**
  * The catalogue shoots every piece twice: a still on a pale backdrop, then the
  * same piece on a model. Stills carry the grid; the model frames are what the
- * editorial bands want.
+ * campaign bands want — and those are 2:3, which is the ratio CampaignSplit
+ * uses, so the shot lands uncropped.
  */
 function modelShot(handle: string, fallback: string): string {
-  const p = getProduct(handle);
-  return p?.images[1]?.url ?? p?.images[0]?.url ?? fallback;
+  const images = getProduct(handle)?.images ?? [];
+  const twoByThree = images.find(
+    (i) => i.width && i.height && Math.abs(i.height / i.width - 1.5) < 0.05,
+  );
+  return twoByThree?.url ?? images[1]?.url ?? images[0]?.url ?? fallback;
 }
 
 export default function HomePage() {

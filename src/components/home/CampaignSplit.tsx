@@ -9,12 +9,16 @@ interface Panel {
   cta: { label: string; href: string };
 }
 
-/** Two-up editorial band, as in the reference ("BOLSAS · VER" / "..."). */
+/**
+ * Two-up campaign band. Panels are 2:3 to match the model frames the shoot
+ * produces — `modelShot()` on the homepage feeds it photos of that ratio, so
+ * the figure is shown whole instead of being cropped at the neck.
+ */
 export function CampaignSplit({ panels }: { panels: [Panel, Panel] }) {
   return (
     <section className="grid gap-px bg-line md:grid-cols-2">
       {panels.map((panel) => (
-        <Reveal key={panel.title} className="relative aspect-[4/5] overflow-hidden bg-paper md:aspect-[4/5]">
+        <Reveal key={panel.title} className="relative aspect-[2/3] overflow-hidden bg-paper">
           <Image src={panel.src} alt={panel.alt} fill sizes="(min-width: 768px) 50vw, 100vw" className="object-cover" />
           {/* the catalogue shoots on pale backdrops — the caption needs its own ground */}
           <div className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent" />

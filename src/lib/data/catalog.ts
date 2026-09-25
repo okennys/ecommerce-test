@@ -49,19 +49,56 @@ interface RawNode {
   children?: Record<string, RawNode>;
 }
 
-/** One child node per stocked category, in the order they appear in the menu. */
+/**
+ * Menu order for every category the brand can carry. Which of these actually
+ * appear is decided by the catalogue: `products.csv` is the allow-list, so a
+ * category the shop has taken offline simply drops out of the tree and the
+ * mega-menu instead of becoming an empty page.
+ */
+const CATEGORY_ORDER = [
+  "vestidos",
+  "blusas",
+  "conjuntos",
+  "calcas",
+  "denim",
+  "saias",
+  "casacos",
+  "macacoes",
+  "joias",
+] as const;
+
+export const stockedCategories: string[] = CATEGORY_ORDER.filter((handle) =>
+  products.some((p) => hasCategory(p, handle)),
+);
+
+const CATEGORY_BANNER: Record<string, string> = { joias: "editorial-acessorios" };
+
 const categoryChildren: Record<string, RawNode> = Object.fromEntries(
-  (
-    ["vestidos", "blusas", "conjuntos", "calcas", "denim", "saias", "casacos", "macacoes", "joias"] as const
-  ).map((handle) => [
+  stockedCategories.map((handle) => [
     handle,
     {
-      title: CATEGORY_NAMES[handle],
+      title: CATEGORY_NAMES[handle] ?? handle,
       select: { by: "category", handle },
-      ...(handle === "joias" ? { editorialImage: "editorial-acessorios" } : {}),
+      ...(CATEGORY_BANNER[handle] ? { editorialImage: CATEGORY_BANNER[handle] } : {}),
     } satisfies RawNode,
   ]),
 );
+
+/**
+ * A round "gifts under" cut-off that keeps splitting the catalogue as prices
+ * move — a hardcoded ladder went stale the moment half the products came off.
+ */
+export const giftCeiling: number = (() => {
+  const prices = products.map((p) => productFromPrice(p).amount).sort((a, b) => a - b);
+  const median = prices[Math.floor(prices.length / 2)] ?? 0;
+  const step = median > 1000 ? 500 : median > 300 ? 100 : 50;
+  return Math.max(step, Math.floor(median / step) * step);
+})();
+
+/** "R$ 1.000" — the gift node's own label, without pulling in the money helper. */
+function giftLabel(amount: number): string {
+  return `R$ ${amount.toLocaleString("pt-BR")}`;
+}
 
 const TREE: Record<Section, RawNode> = {
   mulher: {
@@ -114,8 +151,13 @@ const TREE: Record<Section, RawNode> = {
         title: "Novidades para presentear",
         select: { by: "tag", handle: "novidade" },
       },
-      joias: { title: "Joias", select: { by: "category", handle: "joias" } },
-      "ate-500": { title: "Até R$ 500", select: { by: "maxPrice", amount: 500 } },
+      ...(stockedCategories.includes("joias")
+        ? { joias: { title: "Joias", select: { by: "category", handle: "joias" } } satisfies RawNode }
+        : {}),
+      [`ate-${giftCeiling}`]: {
+        title: `Até ${giftLabel(giftCeiling)}`,
+        select: { by: "maxPrice", amount: giftCeiling },
+      },
     },
   },
 };

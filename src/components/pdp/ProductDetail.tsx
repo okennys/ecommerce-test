@@ -37,7 +37,9 @@ export function ProductDetail({
   const [galleryStart, setGalleryStart] = useState<number | null>(null);
 
   const activeColour = colours.find((c) => c.name === colourName) ?? colours[0];
-  const images = activeColour?.images?.length ? activeColour.images : product.images.map((i) => i.url);
+  const images = activeColour?.images?.length
+    ? activeColour.images
+    : product.images.map((i) => ({ url: i.url, w: i.width ?? 4, h: i.height ?? 5 }));
 
   const sizeValues = product.options.find((o) => o.title === "Tamanho")?.values.map((v) => v.value) ?? [];
   const isOneSize = sizeValues.length === 1 && sizeValues[0] === "Único";
@@ -75,7 +77,7 @@ export function ProductDetail({
       variant_id: variant.id,
       title: product.title,
       variant_title: `${colourName}${isOneSize ? "" : ` · ${chosenSize}`}`,
-      thumbnail: images[0],
+      thumbnail: images[0].url,
       unit_price: variant.calculated_price?.calculated_amount ?? price.amount,
       currency_code: variant.calculated_price?.currency_code ?? price.currency,
     });
@@ -86,16 +88,19 @@ export function ProductDetail({
     <div className="lg:grid lg:grid-cols-2">
       {/* image column */}
       <div className="flex flex-col gap-1 bg-paper-raised">
-        {images.map((src, i) => (
+        {/* the shoot mixes 4:5 stills, 2:3 model frames and 9:16 video grabs —
+            each photo keeps its own ratio so nobody gets cropped at the neck */}
+        {images.map((img, i) => (
           <button
-            key={`${src}-${i}`}
+            key={`${img.url}-${i}`}
             type="button"
             onClick={() => setGalleryStart(i)}
             aria-label={`Ampliar imagem ${i + 1}`}
-            className="group relative aspect-[4/5] w-full cursor-[zoom-in] overflow-hidden"
+            style={{ aspectRatio: `${img.w} / ${img.h}` }}
+            className="group relative w-full cursor-[zoom-in] overflow-hidden"
           >
             <Image
-              src={src}
+              src={img.url}
               alt={i === 0 ? product.title : ""}
               fill
               priority={i === 0}
@@ -260,7 +265,7 @@ export function ProductDetail({
 
       {galleryStart !== null && (
         <Gallery
-          images={images}
+          images={images.map((i) => i.url)}
           alt={product.title}
           startIndex={galleryStart}
           onClose={() => setGalleryStart(null)}

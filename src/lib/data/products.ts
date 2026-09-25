@@ -1,5 +1,10 @@
 import type { StoreProduct, StoreProductVariant } from "@/types/medusa";
-import { SOURCES, CATEGORY_NAMES, type SourceProduct } from "./products.source";
+import {
+  SOURCES,
+  CATEGORY_NAMES,
+  type SourceProduct,
+  type SourceImage,
+} from "./products.source";
 
 /**
  * Catalogue built from the client's real product export (see
@@ -21,7 +26,7 @@ const IN_STOCK = 10;
 export interface ProductColour {
   name: string;
   hex: string;
-  images: string[];
+  images: SourceImage[];
 }
 
 function make(s: SourceProduct): StoreProduct {
@@ -31,10 +36,12 @@ function make(s: SourceProduct): StoreProduct {
     images: c.images,
   }));
 
-  const images = colours[0].images.map((url, i) => ({
+  const images = colours[0].images.map((img, i) => ({
     id: `${s.handle}-img-${i}`,
-    url,
+    url: img.url,
     rank: i,
+    width: img.w,
+    height: img.h,
   }));
 
   const variants: StoreProductVariant[] = [];
@@ -62,7 +69,7 @@ function make(s: SourceProduct): StoreProduct {
     subtitle: s.subtitle,
     description: s.description ?? s.subtitle,
     status: "published",
-    thumbnail: colours[0].images[0],
+    thumbnail: colours[0].images[0].url,
     images,
     options: [
       {
