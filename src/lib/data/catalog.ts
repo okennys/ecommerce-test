@@ -113,10 +113,11 @@ function buildTree(stocked: string[], giftCeiling: number): Record<Section, RawN
           editorialImage: "editorial-film",
           select: { by: "tag", handle: "selecao" },
         },
-        icones: {
-          title: "Ícones",
+        classicos: {
+          title: "Clássicos JU RUDOLPH",
           intro: "As peças que definem a casa.",
           editorialImage: "editorial-colecao",
+          // the Medusa collection keeps its original handle
           select: { by: "collection", handle: "icones" },
         },
       },

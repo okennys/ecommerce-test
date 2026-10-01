@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import { useAccount } from "@/context/AccountProvider";
 import type { NavItem, NavLink } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { cn } from "@/lib/cn";
@@ -22,6 +23,7 @@ export function MobileNav({
   utilityNav: NavLink[];
 }) {
   const [expanded, setExpanded] = useState<string | null>(null);
+  const { customer } = useAccount();
 
   useScrollLock(open);
 
@@ -138,7 +140,7 @@ export function MobileNav({
           ))}
           <li>
             <Link href="/conta" onClick={onClose} className="label block py-1">
-              {t.header.account}
+              {customer ? "Sua conta" : t.header.account}
             </Link>
           </li>
         </ul>

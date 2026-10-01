@@ -11,8 +11,18 @@ import { useCart } from "@/context/CartProvider";
 import { CloseIcon, MinusIcon, PlusIcon } from "@/components/ui/icons";
 
 export function CartDrawer() {
-  const { items, count, subtotal, currency, isOpen, closeCart, updateQuantity, removeItem } =
-    useCart();
+  const {
+    items,
+    count,
+    subtotal,
+    currency,
+    isOpen,
+    closeCart,
+    updateQuantity,
+    removeItem,
+    pending,
+    error,
+  } = useCart();
 
   useScrollLock(isOpen);
 
@@ -69,7 +79,10 @@ export function CartDrawer() {
             <p className="label text-ink-muted">{t.cart.emptyHint}</p>
           </div>
         ) : (
-          <ul className="flex-1 divide-y divide-line overflow-y-auto px-6">
+          <ul
+            className="flex-1 divide-y divide-line overflow-y-auto px-6 aria-busy:opacity-60"
+            aria-busy={pending}
+          >
             {items.map((item) => (
               <li key={item.id} className="flex gap-4 py-6">
                 <div className="relative aspect-[4/5] w-20 shrink-0 bg-paper-raised">
@@ -103,6 +116,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                        disabled={pending}
                         aria-label="Diminuir quantidade"
                         className="p-2"
                       >
@@ -112,6 +126,7 @@ export function CartDrawer() {
                       <button
                         type="button"
                         onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                        disabled={pending}
                         aria-label="Aumentar quantidade"
                         className="p-2"
                       >
@@ -121,6 +136,7 @@ export function CartDrawer() {
                     <button
                       type="button"
                       onClick={() => removeItem(item.id)}
+                      disabled={pending}
                       className="label link-quiet"
                     >
                       {t.cart.remove}
@@ -134,6 +150,11 @@ export function CartDrawer() {
 
         {items.length > 0 && (
           <footer className="border-t border-line px-6 py-6">
+            {error && (
+              <p role="alert" className="label mb-4 text-[#8a2b2b]">
+                {error}
+              </p>
+            )}
             <div className="flex items-center justify-between">
               <span className="label-lg">{t.cart.subtotal}</span>
               <span className="label-lg">{formatPrice(subtotal, currency)}</span>

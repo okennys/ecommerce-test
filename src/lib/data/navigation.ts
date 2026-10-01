@@ -61,7 +61,6 @@ export const footerNav: NavColumn[] = [
       { label: "Envio e prazos", href: "/ajuda/envio" },
       { label: "Trocas e devoluções", href: "/ajuda/trocas" },
       { label: "Guia de tamanhos", href: "/ajuda/tamanhos" },
-      { label: "Rastrear pedido", href: "/ajuda/pedido" },
     ],
   },
   {
@@ -71,8 +70,6 @@ export const footerNav: NavColumn[] = [
       { label: "Nossa história", href: "/a-marca/historia" },
       { label: "Sustentabilidade", href: "/a-marca/sustentabilidade" },
       { label: "Lojas", href: "/lojas" },
-      { label: "Trabalhe conosco", href: "/a-marca/carreiras" },
-      { label: "Imprensa", href: "/a-marca/imprensa" },
     ],
   },
   {
@@ -82,7 +79,6 @@ export const footerNav: NavColumn[] = [
       { label: "Agendar atendimento", href: "/servicos/agendar" },
       { label: "Reserva na loja", href: "/servicos/reserva" },
       { label: "Cuidados com a peça", href: "/servicos/cuidados" },
-      { label: "Embalagem para presente", href: "/servicos/presente" },
     ],
   },
   {
@@ -120,7 +116,7 @@ export function buildNavigation(catalog: Catalog): Navigation {
       href: "/mulher/novidades",
       links: [
         { label: "Selecionados pela Ju", href: "/highlights/selecao" },
-        { label: "Ícones", href: "/highlights/icones" },
+        { label: "Clássicos JU RUDOLPH", href: "/highlights/classicos" },
         { label: "Sale", href: "/sale" },
         { label: "Ver tudo", href: "/mulher" },
       ],
@@ -145,7 +141,7 @@ export function buildNavigation(catalog: Catalog): Navigation {
       href: "/highlights",
       links: [
         { label: "Selecionados pela Ju", href: "/highlights/selecao" },
-        { label: "Ícones", href: "/highlights/icones" },
+        { label: "Clássicos JU RUDOLPH", href: "/highlights/classicos" },
         { label: "Novidades", href: "/mulher/novidades" },
       ],
     },

@@ -8,7 +8,7 @@ import type { StoreCollection } from "@/types/medusa";
  * SWAP POINT: `store.collection.list()` from Medusa.
  */
 export const collections: StoreCollection[] = [
-  { id: "col_icones", title: "Ícones", handle: "icones" },
+  { id: "col_icones", title: "Clássicos JU RUDOLPH", handle: "icones" },
 ];
 
 export function getCollection(handle: string): StoreCollection | undefined {

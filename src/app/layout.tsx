@@ -4,6 +4,7 @@ import "./globals.css";
 import { t } from "@/lib/dictionary";
 import { CartProvider } from "@/context/CartProvider";
 import { CheckoutProvider } from "@/context/CheckoutProvider";
+import { AccountProvider } from "@/context/AccountProvider";
 
 // Display serif — SWAP POINT: replace with the JU RUDOLPH brand face.
 const displaySerif = Bodoni_Moda({
@@ -42,7 +43,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
 
         <CartProvider>
-          <CheckoutProvider>{children}</CheckoutProvider>
+          <AccountProvider>
+            <CheckoutProvider>{children}</CheckoutProvider>
+          </AccountProvider>
         </CartProvider>
       </body>
     </html>

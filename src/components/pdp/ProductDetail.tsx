@@ -29,11 +29,12 @@ export function ProductDetail({
 }) {
   const colours = productColours(product);
   const swatches = namedColours(product);
-  const { addItem, openCart } = useCart();
+  const { addItem } = useCart();
 
   const [colourName, setColourName] = useState(colours[0]?.name ?? "");
   const [size, setSize] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [adding, setAdding] = useState(false);
   const [galleryStart, setGalleryStart] = useState<number | null>(null);
 
   const activeColour = colours.find((c) => c.name === colourName) ?? colours[0];
@@ -57,7 +58,7 @@ export function ProductDetail({
   const details = productDetails(product);
   const sku = (product.metadata?.sku as string) ?? "";
 
-  function handleAdd() {
+  async function handleAdd() {
     const chosenSize = isOneSize ? "Único" : size;
     if (!chosenSize) {
       setError("Selecione um tamanho.");
@@ -71,17 +72,14 @@ export function ProductDetail({
       return;
     }
     setError(null);
-    addItem({
-      product_id: product.id,
-      product_handle: product.handle,
-      variant_id: variant.id,
-      title: product.title,
-      variant_title: `${colourName}${isOneSize ? "" : ` · ${chosenSize}`}`,
-      thumbnail: images[0].url,
-      unit_price: variant.calculated_price?.calculated_amount ?? price.amount,
-      currency_code: variant.calculated_price?.currency_code ?? price.currency,
+    setAdding(true);
+    const failure = await addItem({
+      variantId: variant.id,
+      thumbnail: images[0]?.url,
+      label: `${colourName}${isOneSize ? "" : ` · ${chosenSize}`}`,
     });
-    openCart();
+    setAdding(false);
+    if (failure) setError(failure);
   }
 
   return (
@@ -218,9 +216,10 @@ export function ProductDetail({
             <button
               type="button"
               onClick={handleAdd}
-              className="label mt-6 h-[52px] w-full bg-black px-8 text-on-dark transition-colors hover:bg-ink"
+              disabled={adding}
+              className="label mt-6 h-[52px] w-full bg-black px-8 text-on-dark transition-colors hover:bg-ink disabled:opacity-60"
             >
-              Adicionar à sacola
+              {adding ? "Adicionando…" : "Adicionar à sacola"}
             </button>
 
             <div className="mt-4 flex items-center justify-center">

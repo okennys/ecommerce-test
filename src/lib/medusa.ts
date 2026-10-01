@@ -33,6 +33,9 @@ export function getMedusaClient(): Medusa {
   client ??= new Medusa({
     baseUrl: MEDUSA_BACKEND_URL,
     publishableKey: MEDUSA_PUBLISHABLE_KEY,
+    // this one client serves every visitor: it must never keep a token. Customer
+    // tokens travel per request (see `@/lib/account/session`).
+    auth: { type: "jwt", jwtTokenStorageMethod: "nostore" },
   });
   return client;
 }

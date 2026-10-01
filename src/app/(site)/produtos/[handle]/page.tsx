@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { findProduct, getRelated, productFromPrice } from "@/lib/data/products";
-import { getProducts } from "@/lib/data/catalogue";
+import { getAllProducts, getProductByHandle, getProducts } from "@/lib/data/catalogue";
 import { formatPrice } from "@/lib/format";
 import { ProductDetail } from "@/components/pdp/ProductDetail";
 import { ProductRail } from "@/components/home/ProductRail";
@@ -11,7 +11,7 @@ import type { Crumb } from "@/components/ui/Breadcrumb";
 export const revalidate = 300;
 
 export async function generateStaticParams() {
-  return (await getProducts()).map((p) => ({ handle: p.handle }));
+  return (await getAllProducts()).map((p) => ({ handle: p.handle }));
 }
 
 export async function generateMetadata({
@@ -20,12 +20,13 @@ export async function generateMetadata({
   params: Promise<{ handle: string }>;
 }): Promise<Metadata> {
   const { handle } = await params;
-  const product = findProduct(await getProducts(), handle);
+  const product = await getProductByHandle(handle);
   if (!product) return {};
   const price = productFromPrice(product);
   return {
     title: product.title,
     description: `${product.title} — ${formatPrice(price.amount, price.currency)}. ${product.description}`,
+    ...(product.metadata?.hidden ? { robots: { index: false, follow: false } } : {}),
   };
 }
 
@@ -43,8 +44,7 @@ export default async function ProdutoPage({
   params: Promise<{ handle: string }>;
 }) {
   const { handle } = await params;
-  const all = await getProducts();
-  const product = findProduct(all, handle);
+  const [product, all] = await Promise.all([getProductByHandle(handle), getProducts()]);
   if (!product) notFound();
 
   const related = getRelated(all, product, 4);

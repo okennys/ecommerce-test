@@ -1,9 +1,10 @@
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/dictionary";
 import { TextCta } from "@/components/ui/TextCta";
 import { ChevronDownIcon } from "@/components/ui/icons";
+import { ScrollFade } from "./ScrollFade";
 
 /**
  * Stacked-scroll hero, matching `reference/VIDEO REF 2 .mp4` (ysl.com/pt-br home).
@@ -29,9 +30,37 @@ export function ScrollStack({ children }: { children: ReactNode }) {
   );
 }
 
+interface VideoSource {
+  src: string;
+  /** a frame of the film, shown while it loads and when autoplay is blocked */
+  poster: string;
+}
+
 type Media =
-  | { type: "image"; src: string; alt: string }
-  | { type: "video"; src: string; poster: string; alt: string };
+  | {
+      type: "image";
+      /** 16:9 (1920×1080) — or the only image when there is no mobile cut */
+      src: string;
+      /** 9:16 (1080×1920) for portrait screens */
+      mobileSrc?: string;
+      /**
+       * Optional starting frame laid over the photo (e.g. its black-and-white
+       * version) that fades away as the panel scrolls in — same framing as `src`.
+       */
+      from?: { src: string; mobileSrc?: string };
+      alt: string;
+    }
+  | {
+      type: "video";
+      /** 16:9 cut (1920×1080) for landscape screens */
+      desktop: VideoSource;
+      /** 9:16 cut (1080×1920) for portrait screens — phones */
+      mobile?: VideoSource;
+      alt: string;
+    };
+
+// portrait screens get the vertical cut; the browser fetches only one file
+const PORTRAIT = "(orientation: portrait)";
 
 interface ScrollPanelProps {
   media: Media;
@@ -57,25 +86,40 @@ export function ScrollPanel({
   return (
     <section className="sticky top-0 h-svh w-full overflow-hidden bg-surface-dark">
       {media.type === "image" ? (
-        <Image
-          src={media.src}
-          alt={media.alt}
-          fill
-          priority={priority}
-          sizes="100vw"
-          className="object-cover"
-        />
+        <>
+          <Still src={media.src} mobileSrc={media.mobileSrc} alt={media.alt} priority={priority} />
+          {media.from && (
+            <ScrollFade>
+              <Still src={media.from.src} mobileSrc={media.from.mobileSrc} alt="" />
+            </ScrollFade>
+          )}
+        </>
       ) : (
-        <video
-          src={media.src}
-          poster={media.poster}
-          autoPlay
-          muted
-          loop
-          playsInline
-          aria-label={media.alt}
-          className="absolute inset-0 h-full w-full object-cover"
-        />
+        <>
+          {/* poster under the film: covers the load, and stays when the phone
+              blocks autoplay (iOS Low Power Mode) */}
+          <picture>
+            {media.mobile && <source media={PORTRAIT} srcSet={media.mobile.poster} />}
+            <img
+              src={media.desktop.poster}
+              alt=""
+              fetchPriority={priority ? "high" : undefined}
+              className="absolute inset-0 h-full w-full object-cover"
+            />
+          </picture>
+          <video
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload={priority ? "auto" : "metadata"}
+            aria-label={media.alt}
+            className="absolute inset-0 h-full w-full object-cover"
+          >
+            {media.mobile && <source src={media.mobile.src} type="video/mp4" media={PORTRAIT} />}
+            <source src={media.desktop.src} type="video/mp4" />
+          </video>
+        </>
       )}
 
       {/* legibility scrim — keeps the caption/wordmark readable over any still */}
@@ -120,5 +164,42 @@ export function ScrollPanel({
         />
       </div>
     </section>
+  );
+}
+
+/** A full-bleed still: art-directed when there is a mobile cut, else one image. */
+function Still({
+  src,
+  mobileSrc,
+  alt,
+  priority,
+}: {
+  src: string;
+  mobileSrc?: string;
+  alt: string;
+  priority?: boolean;
+}) {
+  if (mobileSrc) return <ArtDirectedImage desktop={src} mobile={mobileSrc} alt={alt} />;
+  return <Image src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover" />;
+}
+
+/**
+ * A landscape and a portrait cut of the same banner, each optimized by Next and
+ * only the one that matches the screen downloaded (Next's art-direction recipe).
+ */
+function ArtDirectedImage({ desktop, mobile, alt }: { desktop: string; mobile: string; alt: string }) {
+  const common = { alt, sizes: "100vw" };
+  const {
+    props: { srcSet: mobileSet },
+  } = getImageProps({ ...common, src: mobile, width: 1080, height: 1920 });
+  const {
+    props: { srcSet: desktopSet, ...rest },
+  } = getImageProps({ ...common, src: desktop, width: 1920, height: 1080 });
+  return (
+    <picture>
+      <source media={PORTRAIT} srcSet={mobileSet} />
+      <source srcSet={desktopSet} />
+      <img {...rest} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
+    </picture>
   );
 }

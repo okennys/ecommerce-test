@@ -33,23 +33,41 @@ export default async function HomePage() {
   return (
     <>
       {/* Stacked-scroll hero — each panel pins while the next covers it.
-          SWAP POINT: give panels `media={{ type: "video", src, poster, alt }}`
-          once JU RUDOLPH campaign films land in public/media/. */}
+          Films live in public/media/hero/: a 16:9 desktop cut and a 9:16
+          mobile cut per panel, silent, with a poster frame each. */}
       <ScrollStack>
         <ScrollPanel
           wordmark
           priority
-          media={{ type: "image", src: ph("editorial-season"), alt: "Campanha JU RUDOLPH" }}
+          media={{
+            type: "video",
+            // desktop plays both films back to back (VIDEO HERO 1 + video intercalado);
+            // the phone keeps the first one until the second has a vertical cut
+            desktop: { src: "/media/hero/hero-1-desktop-loop.mp4", poster: "/media/hero/hero-1-desktop.jpg" },
+            mobile: { src: "/media/hero/hero-1-mobile.mp4", poster: "/media/hero/hero-1-mobile.jpg" },
+            alt: "Campanha JU RUDOLPH",
+          }}
           kicker={t.home.heroKicker}
           cta={{ label: t.home.heroCta, href: "/mulher/novidades" }}
         />
         <ScrollPanel
-          media={{ type: "image", src: ph("editorial-colecao"), alt: "A coleção JU RUDOLPH" }}
+          media={{
+            // black-and-white gives way to colour as the panel scrolls in
+            type: "image",
+            src: "/media/hero/hero-2-color.jpg",
+            from: { src: "/media/hero/hero-2-pb.jpg" },
+            alt: "A coleção JU RUDOLPH",
+          }}
           kicker="A coleção"
           cta={{ label: "Descobrir", href: "/mulher" }}
         />
         <ScrollPanel
-          media={{ type: "image", src: ph("split-mulher"), alt: "Selecionados pela Ju" }}
+          media={{
+            type: "image",
+            src: "/media/hero/hero-3-desktop.jpg",
+            mobileSrc: "/media/hero/hero-3-mobile.jpg",
+            alt: "Selecionados pela Ju",
+          }}
           kicker="Selecionados pela Ju"
           cta={{ label: "Ver a seleção", href: "/highlights/selecao" }}
         />
@@ -80,9 +98,9 @@ export default async function HomePage() {
       />
 
       <ProductRail
-        title="Ícones"
+        title="Clássicos JU RUDOLPH"
         products={icons.length ? icons : products.slice(0, 4)}
-        viewAllHref="/highlights/icones"
+        viewAllHref="/highlights/classicos"
       />
 
       <EditorialBlock

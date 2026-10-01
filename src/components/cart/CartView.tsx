@@ -8,7 +8,16 @@ import { useCart } from "@/context/CartProvider";
 import { MinusIcon, PlusIcon } from "@/components/ui/icons";
 
 export function CartView() {
-  const { items, count, subtotal, currency, updateQuantity, removeItem } = useCart();
+  const { items, count, subtotal, currency, updateQuantity, removeItem, ready, pending, error } =
+    useCart();
+
+  if (!ready) {
+    return (
+      <p className="py-24 text-center text-ink-muted" aria-busy="true">
+        Carregando sua sacola…
+      </p>
+    );
+  }
 
   if (items.length === 0) {
     return (
@@ -32,7 +41,16 @@ export function CartView() {
           Sacola <span className="text-ink-muted">({count})</span>
         </h1>
 
-        <ul className="mt-8 divide-y divide-line border-y border-line">
+        {error && (
+          <p role="alert" className="label mt-6 text-[#8a2b2b]">
+            {error}
+          </p>
+        )}
+
+        <ul
+          className="mt-8 divide-y divide-line border-y border-line aria-busy:opacity-60"
+          aria-busy={pending}
+        >
           {items.map((item) => (
             <li key={item.id} className="flex gap-5 py-6">
               <Link
@@ -61,6 +79,7 @@ export function CartView() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      disabled={pending}
                       aria-label="Diminuir quantidade"
                       className="p-2.5"
                     >
@@ -70,13 +89,19 @@ export function CartView() {
                     <button
                       type="button"
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      disabled={pending}
                       aria-label="Aumentar quantidade"
                       className="p-2.5"
                     >
                       <PlusIcon size={14} />
                     </button>
                   </div>
-                  <button type="button" onClick={() => removeItem(item.id)} className="label link-quiet">
+                  <button
+                    type="button"
+                    onClick={() => removeItem(item.id)}
+                    disabled={pending}
+                    className="label link-quiet"
+                  >
                     {t.cart.remove}
                   </button>
                 </div>
@@ -116,7 +141,7 @@ export function CartView() {
             {t.cart.checkout}
           </Link>
           <p className="label mt-4 text-center text-ink-muted">
-            Pagamento simulado — ambiente de demonstração.
+            Pagamento seguro processado pelo Stripe.
           </p>
         </div>
       </aside>

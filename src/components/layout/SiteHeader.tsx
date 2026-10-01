@@ -7,6 +7,7 @@ import type { Navigation } from "@/lib/data/navigation";
 import { t } from "@/lib/dictionary";
 import { cn } from "@/lib/cn";
 import { useCart } from "@/context/CartProvider";
+import { useAccount } from "@/context/AccountProvider";
 import { Logo } from "@/components/ui/Logo";
 import { BagIcon, MenuIcon, SearchIcon } from "@/components/ui/icons";
 import { MegaMenu } from "./MegaMenu";
@@ -22,6 +23,7 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
   const hasHeroRoute = pathname === "/";
 
   const { count, openCart } = useCart();
+  const { customer } = useAccount();
 
   const [y, setY] = useState(0);
   const [heroPx, setHeroPx] = useState<number | null>(hasHeroRoute ? null : 0);
@@ -184,7 +186,7 @@ export function SiteHeader({ nav }: { nav: Navigation }) {
                 ))}
                 <li>
                   <Link href="/conta" className="label py-2">
-                    {t.header.account}
+                    {customer ? customer.firstName || "Sua conta" : t.header.account}
                   </Link>
                 </li>
               </ul>

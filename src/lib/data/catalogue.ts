@@ -127,12 +127,15 @@ function toStoreProduct(p: MedusaProduct): StoreProduct {
       colours,
       compareAt,
       details,
+      // test products (e.g. a R$ 5 piece for payment checks) are reachable by
+      // their URL but left out of every listing, search and menu
+      hidden: meta.hidden === true || meta.hidden === "true",
     },
   };
 }
 
-/** Every published product, in one request per 100. */
-export const getProducts = cache(async (): Promise<StoreProduct[]> => {
+/** Every published product, hidden test pieces included — one request per 100. */
+export const getAllProducts = cache(async (): Promise<StoreProduct[]> => {
   if (!isMedusaConfigured()) return [];
   const sdk = getMedusaClient();
   const out: StoreProduct[] = [];
@@ -153,8 +156,13 @@ export const getProducts = cache(async (): Promise<StoreProduct[]> => {
   return out;
 });
 
+/** What the storefront lists: everything except hidden test pieces. */
+export const getProducts = cache(async (): Promise<StoreProduct[]> =>
+  (await getAllProducts()).filter((p) => !p.metadata?.hidden),
+);
+
 export const getProductByHandle = cache(async (handle: string): Promise<StoreProduct | undefined> => {
-  const all = await getProducts();
+  const all = await getAllProducts();
   return all.find((p) => p.handle === handle);
 });
 
