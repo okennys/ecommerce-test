@@ -41,10 +41,9 @@ export default async function HomePage() {
           priority
           media={{
             type: "video",
-            // desktop plays both films back to back (VIDEO HERO 1 + video intercalado);
-            // the phone keeps the first one until the second has a vertical cut
+            // both cuts play the two films back to back (VIDEO HERO 1 + intercalado)
             desktop: { src: "/media/hero/hero-1-desktop-loop.mp4", poster: "/media/hero/hero-1-desktop.jpg" },
-            mobile: { src: "/media/hero/hero-1-mobile.mp4", poster: "/media/hero/hero-1-mobile.jpg" },
+            mobile: { src: "/media/hero/hero-1-mobile-loop.mp4", poster: "/media/hero/hero-1-mobile.jpg" },
             alt: "Campanha JU RUDOLPH",
           }}
           kicker={t.home.heroKicker}

@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { StoreProduct } from "@/types/medusa";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/dictionary";
@@ -36,6 +36,40 @@ export function ProductDetail({
   const [error, setError] = useState<string | null>(null);
   const [adding, setAdding] = useState(false);
   const [galleryStart, setGalleryStart] = useState<number | null>(null);
+  const railRef = useRef<HTMLDivElement>(null);
+
+  // The info rail sticks while the photos scroll. When it is taller than the
+  // screen (description open), pinning it at the top would hide its end until
+  // the gallery runs out — so it scrolls along until its bottom shows, then pins.
+  useEffect(() => {
+    const rail = railRef.current;
+    if (!rail) return;
+    const BOTTOM_GAP = 24;
+    // the class's own offset (under the header), read once before any inline
+    // value: mid-transition the computed `top` would report the animated one
+    let headerTop: number | null = null;
+    const update = () => {
+      if (getComputedStyle(rail).position !== "sticky") {
+        rail.style.top = ""; // phones: the rail isn't sticky
+        headerTop = null;
+        return;
+      }
+      if (headerTop === null) {
+        rail.style.top = "";
+        headerTop = parseFloat(getComputedStyle(rail).top) || 0;
+      }
+      const tooTall = rail.offsetHeight > window.innerHeight - headerTop;
+      rail.style.top = tooTall ? `${window.innerHeight - rail.offsetHeight - BOTTOM_GAP}px` : "";
+    };
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(rail);
+    window.addEventListener("resize", update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", update);
+    };
+  }, []);
 
   const activeColour = colours.find((c) => c.name === colourName) ?? colours[0];
   const images = activeColour?.images?.length
@@ -114,7 +148,7 @@ export function ProductDetail({
 
       {/* sticky rail */}
       <div className="lg:h-full">
-        <div className="lg:sticky lg:top-header">
+        <div ref={railRef} className="lg:sticky lg:top-header lg:transition-[top] lg:duration-300">
           <div className="mx-auto max-w-md px-5 py-10 lg:px-14 lg:py-16">
             <Breadcrumb items={crumbs} className="mb-8" />
 
