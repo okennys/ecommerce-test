@@ -28,9 +28,8 @@ export function ProductCard({
   const compareAt = productCompareAt(product);
   const [front, back] = product.images;
 
-  // Ingest normalises every photo to 4:5, so nothing is cropped here. A taller
-  // frame could only come from a future shoot — anchor those to the top so the
-  // crop would take the hem, never the face.
+  // The grid is 4:5 and the stills already are, but model frames are 2:3 —
+  // anchor those to the top so the crop takes the hem, never the face.
   const anchor = (img?: { width?: number; height?: number }) =>
     img?.width && img?.height && img.height / img.width > 1.26 ? "object-top" : "object-center";
   const colours = namedColours(product);
