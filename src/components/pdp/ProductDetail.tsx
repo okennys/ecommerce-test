@@ -120,8 +120,9 @@ export function ProductDetail({
     <div className="lg:grid lg:grid-cols-2">
       {/* image column */}
       <div className="flex flex-col gap-1 bg-shot">
-        {/* the shoot mixes 4:5 stills, 2:3 model frames and 9:16 video grabs —
-            each photo keeps its own ratio so nobody gets cropped at the neck */}
+        {/* every photo is normalised to the grid's 4:5 on white at ingest, so the
+            column reads as one piece; the ratio is still carried per image in case
+            a future shoot arrives in another format */}
         {images.map((img, i) => (
           <button
             key={`${img.url}-${i}`}
