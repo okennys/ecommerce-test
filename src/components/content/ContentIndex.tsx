@@ -13,6 +13,7 @@ export function ContentIndex({ sectionKey }: { sectionKey: string }) {
         kicker="JU RUDOLPH"
         title={section.title}
         image={section.image}
+        imageMobile={section.imageMobile}
         crumbs={[
           { label: "Início", href: "/" },
           { label: section.title, href: `/${section.key}` },

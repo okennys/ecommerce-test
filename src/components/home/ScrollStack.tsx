@@ -1,4 +1,5 @@
-import Image, { getImageProps } from "next/image";
+import Image from "next/image";
+import { ArtDirectedImage } from "@/components/ui/ArtDirectedImage";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { t } from "@/lib/dictionary";
@@ -183,23 +184,3 @@ function Still({
   return <Image src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover" />;
 }
 
-/**
- * A landscape and a portrait cut of the same banner, each optimized by Next and
- * only the one that matches the screen downloaded (Next's art-direction recipe).
- */
-function ArtDirectedImage({ desktop, mobile, alt }: { desktop: string; mobile: string; alt: string }) {
-  const common = { alt, sizes: "100vw" };
-  const {
-    props: { srcSet: mobileSet },
-  } = getImageProps({ ...common, src: mobile, width: 1080, height: 1920 });
-  const {
-    props: { srcSet: desktopSet, ...rest },
-  } = getImageProps({ ...common, src: desktop, width: 1920, height: 1080 });
-  return (
-    <picture>
-      <source media={PORTRAIT} srcSet={mobileSet} />
-      <source srcSet={desktopSet} />
-      <img {...rest} alt={alt} className="absolute inset-0 h-full w-full object-cover" />
-    </picture>
-  );
-}

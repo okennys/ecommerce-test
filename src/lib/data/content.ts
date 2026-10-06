@@ -24,7 +24,9 @@ export interface ContentSection {
   key: ContentPage["section"];
   title: string;
   intro: string;
+  /** Banner paths under /public — desktop wide cut and phone cut. */
   image?: string;
+  imageMobile?: string;
   links: { label: string; href: string }[];
 }
 
@@ -33,7 +35,8 @@ export const contentSections: ContentSection[] = [
     key: "a-marca",
     title: "A Marca",
     intro: "Uma casa de moda autoral brasileira, feita à mão em São Paulo.",
-    image: "editorial-atelier",
+    image: "/media/marca/a-marca-desktop.jpg",
+    imageMobile: "/media/marca/a-marca-mobile.jpg",
     links: [
       { label: "Nossa história", href: "/a-marca/historia" },
       { label: "Sustentabilidade", href: "/a-marca/sustentabilidade" },
@@ -46,7 +49,8 @@ export const contentSections: ContentSection[] = [
     key: "servicos",
     title: "Serviços",
     intro: "Do provador ao pós-venda — o cuidado JU RUDOLPH com cada peça.",
-    image: "editorial-roupas",
+    image: "/media/marca/servicos-desktop.jpg",
+    imageMobile: "/media/marca/servicos-mobile.jpg",
     links: [
       { label: "Agendar atendimento", href: "/servicos/agendar" },
       { label: "Reserva na loja", href: "/servicos/reserva" },

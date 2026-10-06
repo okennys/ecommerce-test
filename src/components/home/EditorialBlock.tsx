@@ -1,11 +1,15 @@
 import Image from "next/image";
 import { cn } from "@/lib/cn";
+import { ArtDirectedImage } from "@/components/ui/ArtDirectedImage";
 import { Reveal } from "@/components/ui/Reveal";
 import { TextCta } from "@/components/ui/TextCta";
 
 export interface EditorialBlockProps {
   id?: string;
   src: string;
+  /** The block is 16:10 on desktop and 3:4 on a phone — a banner with people in
+   *  it needs its own portrait cut, or the crop eats them. */
+  mobileSrc?: string;
   alt: string;
   kicker?: string;
   title: string;
@@ -20,6 +24,7 @@ export interface EditorialBlockProps {
 export function EditorialBlock({
   id,
   src,
+  mobileSrc,
   alt,
   kicker,
   title,
@@ -37,14 +42,11 @@ export function EditorialBlock({
         size === "screen" ? "h-[100svh] min-h-[560px]" : "aspect-[3/4] md:aspect-[16/10]",
       )}
     >
-      <Image
-        src={src}
-        alt={alt}
-        fill
-        priority={priority}
-        sizes="100vw"
-        className="object-cover"
-      />
+      {mobileSrc ? (
+        <ArtDirectedImage desktop={src} mobile={mobileSrc} alt={alt} priority={priority} />
+      ) : (
+        <Image src={src} alt={alt} fill priority={priority} sizes="100vw" className="object-cover" />
+      )}
 
       <Reveal
         className={cn(

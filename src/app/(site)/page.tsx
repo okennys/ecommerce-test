@@ -2,7 +2,6 @@ import { ScrollStack, ScrollPanel } from "@/components/home/ScrollStack";
 import { EditorialBlock } from "@/components/home/EditorialBlock";
 import { ProductRail } from "@/components/home/ProductRail";
 import { CampaignSplit } from "@/components/home/CampaignSplit";
-import { ph } from "@/lib/data/media";
 import { t } from "@/lib/dictionary";
 import type { StoreProduct } from "@/types/medusa";
 import { byTag, byCollection, findProduct } from "@/lib/data/products";
@@ -81,13 +80,13 @@ export default async function HomePage() {
       <CampaignSplit
         panels={[
           {
-            src: campaignShot(products, "vestido-rafa", ph("look-02")),
+            src: campaignShot(products, "vestido-rafa", "/media/marca/split-vestidos.jpg"),
             alt: "Vestidos JU RUDOLPH",
             title: "Vestidos",
             cta: { label: "Ver", href: "/mulher/vestidos" },
           },
           {
-            src: campaignShot(products, "conjunto-leticia", ph("split-mulher")),
+            src: campaignShot(products, "conjunto-leticia", "/media/marca/split-conjuntos.jpg"),
             alt: "Conjuntos JU RUDOLPH",
             title: "Conjuntos",
             cta: { label: "Descobrir", href: "/mulher/conjuntos" },
@@ -108,8 +107,9 @@ export default async function HomePage() {
       />
 
       <EditorialBlock
-        src={ph("editorial-atelier")}
-        alt="Ateliê JU RUDOLPH em São Paulo"
+        src="/media/marca/home-editorial-desktop.jpg"
+        mobileSrc="/media/marca/home-editorial-mobile.jpg"
+        alt="Alfaiataria JU RUDOLPH"
         kicker="A Marca"
         title="Feito à mão, em São Paulo"
         cta={{ label: "Nossa história", href: "/a-marca/historia" }}
