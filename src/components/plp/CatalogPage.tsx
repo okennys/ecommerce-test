@@ -9,7 +9,7 @@ import {
   sortProducts,
   getFacets,
 } from "@/lib/data/products";
-import { ph } from "@/lib/data/media";
+import { ArtDirectedImage } from "@/components/ui/ArtDirectedImage";
 import { Breadcrumb } from "@/components/ui/Breadcrumb";
 import { PlpToolbar } from "./PlpToolbar";
 import { ProductGrid } from "./ProductGrid";
@@ -51,14 +51,16 @@ export function CatalogPage({
     <div>
       {node.editorialImage && (
         <section className="relative flex h-[42vh] min-h-[280px] w-full items-end overflow-hidden bg-surface-dark">
-          <Image
-            src={ph(node.editorialImage)}
-            alt=""
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
+          {node.editorialImageMobile ? (
+            <ArtDirectedImage
+              desktop={node.editorialImage}
+              mobile={node.editorialImageMobile}
+              alt=""
+              priority
+            />
+          ) : (
+            <Image src={node.editorialImage} alt="" fill priority sizes="100vw" className="object-cover" />
+          )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 to-transparent" />
           <div className="relative w-full px-5 pb-10 text-center text-on-dark lg:px-gutter">
             <p className="label opacity-90">{node.crumbs[node.crumbs.length - 2]?.label ?? "JU RUDOLPH"}</p>

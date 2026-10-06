@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { stores } from "@/lib/data/stores";
-import { ph } from "@/lib/data/media";
 import { ContentHero } from "@/components/content/ContentHero";
 import { PinIcon } from "@/components/ui/icons";
 
@@ -16,7 +15,8 @@ export default function LojasPage() {
       <ContentHero
         kicker="JU RUDOLPH"
         title="Onde nos encontrar"
-        image="editorial-atelier"
+        image="/media/marca/contato-desktop.jpg"
+        imageMobile="/media/marca/contato-mobile.jpg"
         crumbs={[
           { label: "Início", href: "/" },
           { label: "Onde nos encontrar", href: "/contato" },
@@ -41,7 +41,7 @@ export default function LojasPage() {
             <li key={store.slug}>
               <div className="relative aspect-[4/3] w-full bg-paper-raised">
                 <Image
-                  src={ph(store.image)}
+                  src={store.image}
                   alt={store.name}
                   fill
                   sizes="(min-width: 640px) 45vw, 100vw"

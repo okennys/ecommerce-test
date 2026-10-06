@@ -29,6 +29,7 @@ export interface CatalogNode {
   title: string;
   intro?: string;
   editorialImage?: string;
+  editorialImageMobile?: string;
   crumbs: { label: string; href: string }[];
   select:
     | { by: "all" }
@@ -42,6 +43,7 @@ interface RawNode {
   title: string;
   intro?: string;
   editorialImage?: string;
+  editorialImageMobile?: string;
   select: CatalogNode["select"];
   children?: Record<string, RawNode>;
 }
@@ -54,7 +56,8 @@ export interface Catalog {
   giftCeiling: number;
 }
 
-const CATEGORY_BANNER: Record<string, string> = { joias: "editorial-acessorios" };
+/** Per-category banner, when a category earns one. Paths under /public. */
+const CATEGORY_BANNER: Record<string, string> = {};
 
 /** "R$ 1.000" — the gift node's own label, without pulling in the money helper. */
 export function giftLabel(amount: number): string {
@@ -84,13 +87,15 @@ function buildTree(stocked: string[], giftCeiling: number): Record<Section, RawN
     mulher: {
       title: "Mulher",
       intro: "Toda a coleção JU RUDOLPH.",
-      editorialImage: "editorial-colecao",
+      editorialImage: "/media/marca/plp-mulher-desktop.jpg",
+      editorialImageMobile: "/media/marca/plp-mulher-mobile.jpg",
       select: { by: "all" },
       children: {
         novidades: {
           title: "Novidades",
           intro: "Tudo que acabou de chegar ao ateliê.",
-          editorialImage: "editorial-season",
+          editorialImage: "/media/marca/plp-novidades-desktop.jpg",
+          editorialImageMobile: "/media/marca/plp-novidades-mobile.jpg",
           select: { by: "tag", handle: "novidade" },
         },
         ...categoryChildren,
@@ -99,24 +104,28 @@ function buildTree(stocked: string[], giftCeiling: number): Record<Section, RawN
     sale: {
       title: "Sale",
       intro: "Peças selecionadas com preço especial, enquanto durarem os estoques.",
-      editorialImage: "editorial-roupas",
+      editorialImage: "/media/marca/plp-sale-desktop.jpg",
+      editorialImageMobile: "/media/marca/plp-sale-mobile.jpg",
       select: { by: "tag", handle: "sale" },
     },
     highlights: {
       title: "Highlights",
       intro: "Os destaques da estação, selecionados pela Ju.",
-      editorialImage: "editorial-film",
+      editorialImage: "/media/marca/plp-highlights-desktop.jpg",
+      editorialImageMobile: "/media/marca/plp-highlights-mobile.jpg",
       select: { by: "tag", handle: "selecao" },
       children: {
         selecao: {
           title: "Selecionados pela Ju",
-          editorialImage: "editorial-film",
+          editorialImage: "/media/marca/plp-highlights-desktop.jpg",
+          editorialImageMobile: "/media/marca/plp-highlights-mobile.jpg",
           select: { by: "tag", handle: "selecao" },
         },
         classicos: {
           title: "Clássicos JU RUDOLPH",
           intro: "As peças que definem a casa.",
-          editorialImage: "editorial-colecao",
+          editorialImage: "/media/marca/plp-classicos-desktop.jpg",
+          editorialImageMobile: "/media/marca/plp-classicos-mobile.jpg",
           // the Medusa collection keeps its original handle
           select: { by: "collection", handle: "icones" },
         },
@@ -125,7 +134,8 @@ function buildTree(stocked: string[], giftCeiling: number): Record<Section, RawN
     presentes: {
       title: "Presentes",
       intro: "Para presentear — ou se presentear.",
-      editorialImage: "editorial-atelier",
+      editorialImage: "/media/marca/plp-presentes-desktop.jpg",
+      editorialImageMobile: "/media/marca/plp-presentes-mobile.jpg",
       select: { by: "all" },
       children: {
         novidades: {
@@ -162,6 +172,7 @@ function walk(
     title: raw.title,
     intro: raw.intro,
     editorialImage: raw.editorialImage,
+    editorialImageMobile: raw.editorialImageMobile,
     crumbs: [...crumbs, selfCrumb],
     select: raw.select,
   });

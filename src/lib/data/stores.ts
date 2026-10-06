@@ -13,6 +13,7 @@ export interface Store {
   address: string;
   phone: string;
   hours: string;
+  /** Path under /public. */
   image: string;
   flagship?: boolean;
 }
@@ -26,7 +27,7 @@ export const stores: Store[] = [
     address: `${brand.address.street} — ${brand.address.district} · CEP ${brand.address.cep}`,
     phone: brand.phoneDisplay,
     hours: brand.hours,
-    image: "editorial-atelier",
+    image: "/media/marca/atendimento.jpg",
     flagship: true,
   },
 ];
