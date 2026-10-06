@@ -2,6 +2,7 @@ import "server-only";
 import { cache } from "react";
 import type { StoreProduct, StoreProductVariant } from "@/types/medusa";
 import type { ProductColour } from "./products";
+import { PHOTO_MODE } from "@/lib/photo-mode";
 import {
   getMedusaClient,
   MEDUSA_REGION_ID,
@@ -49,9 +50,22 @@ function parseJson<T>(value: unknown, fallback: T): T {
 
 type MedusaProduct = Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
+/**
+ * Applies `PHOTO_MODE`. In "still" mode the model frames are dropped, but never
+ * to the point of leaving a colour with nothing to show — a colour shot only on
+ * a model keeps its photos rather than rendering an empty gallery.
+ */
+function applyPhotoMode(colours: ProductColour[]): ProductColour[] {
+  if (PHOTO_MODE === "all") return colours;
+  return colours.map((c) => {
+    const stills = c.images.filter((i) => i.kind !== "model");
+    return stills.length ? { ...c, images: stills } : c;
+  });
+}
+
 function toStoreProduct(p: MedusaProduct): StoreProduct {
   const meta = p.metadata ?? {};
-  const colours = parseJson<ProductColour[]>(meta.colours, []);
+  const colours = applyPhotoMode(parseJson<ProductColour[]>(meta.colours, []));
   const tags = parseJson<string[]>(meta.tags, []);
   const details = parseJson<string[]>(meta.details, []);
   const compareAt = meta.compare_at == null ? undefined : Number(meta.compare_at);

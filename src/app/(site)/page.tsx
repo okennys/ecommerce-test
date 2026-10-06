@@ -7,14 +7,19 @@ import { t } from "@/lib/dictionary";
 import type { StoreProduct } from "@/types/medusa";
 import { byTag, byCollection, findProduct } from "@/lib/data/products";
 import { getProducts } from "@/lib/data/catalogue";
+import { showsModelPhotos } from "@/lib/photo-mode";
 
 /**
+ * Picture for a campaign band.
+ *
  * The catalogue shoots every piece twice: a still on a pale backdrop, then the
- * same piece on a model. Stills carry the grid; the model frames are what the
- * campaign bands want — and those are 2:3, which is the ratio CampaignSplit
- * uses, so the shot lands uncropped.
+ * same piece on a model. The model frames are 2:3, which is the ratio
+ * CampaignSplit uses, so the shot lands uncropped — but under
+ * `PHOTO_MODE === "still"` there are none, and a cut-out garment floating in a
+ * full-bleed band reads as a mistake. The campaign still takes over there.
  */
-function modelShot(products: StoreProduct[], handle: string, fallback: string): string {
+function campaignShot(products: StoreProduct[], handle: string, fallback: string): string {
+  if (!showsModelPhotos) return fallback;
   const images = findProduct(products, handle)?.images ?? [];
   const twoByThree = images.find(
     (i) => i.width && i.height && Math.abs(i.height / i.width - 1.5) < 0.05,
@@ -76,13 +81,13 @@ export default async function HomePage() {
       <CampaignSplit
         panels={[
           {
-            src: modelShot(products, "vestido-rafa", ph("look-02")),
+            src: campaignShot(products, "vestido-rafa", ph("look-02")),
             alt: "Vestidos JU RUDOLPH",
             title: "Vestidos",
             cta: { label: "Ver", href: "/mulher/vestidos" },
           },
           {
-            src: modelShot(products, "conjunto-leticia", ph("split-mulher")),
+            src: campaignShot(products, "conjunto-leticia", ph("split-mulher")),
             alt: "Conjuntos JU RUDOLPH",
             title: "Conjuntos",
             cta: { label: "Descobrir", href: "/mulher/conjuntos" },

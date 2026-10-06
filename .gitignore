@@ -47,3 +47,6 @@ next-env.d.ts
 
 # design reference
 /reference/
+
+# material-fonte de vídeo (fica só no projeto principal)
+/VIDEOS BANNERS/

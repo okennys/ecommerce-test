@@ -8,11 +8,15 @@ import type { StoreProduct } from "@/types/medusa";
  * components can use it on data they were handed.
  */
 
+export type PhotoKind = "still" | "model";
+
 export interface ProductImage {
   url: string;
   /** intrinsic size of the file — the shoot mixes 4:5, 2:3 and 9:16 */
   w: number;
   h: number;
+  /** still-life on the backdrop, or the piece worn by a model */
+  kind?: PhotoKind;
 }
 
 export interface ProductColour {

@@ -4,6 +4,26 @@ High-end fashion e-commerce **frontend**. Backend (Medusa JS + Stripe/Bling) is
 built separately and connected later. Design reference: `ysl.com/pt-br`
 (analysis frames in `reference/`).
 
+## Fotografia de produto: still ou modelo
+
+O ensaio da marca tem duas fotos de cada peça — o **still** no fundo claro e a
+mesma peça **na modelo**. As duas estão sempre no catálogo; o que muda é qual
+delas chega à tela.
+
+Hoje o site está em **`still`**: só as fotos de produto no fundo claro, em todo
+lugar (grade, página do produto, galeria e zoom). As faixas de campanha da home
+seguem com imagem de campanha, porque uma peça recortada num banner de tela
+cheia não funciona.
+
+Para voltar a mostrar as fotos com modelo, há dois caminhos:
+
+- trocar o padrão em `src/lib/photo-mode.ts` (`"still"` → `"all"`), ou
+- definir `NEXT_PUBLIC_PHOTO_MODE=all` nas variáveis do Vercel, sem mexer no
+  código.
+
+A versão anterior, com as fotos de modelo, está marcada no Git como
+`versao-modelo`.
+
 ## Stack
 
 - **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
