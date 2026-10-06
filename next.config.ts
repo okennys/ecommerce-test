@@ -4,9 +4,13 @@ const nextConfig: NextConfig = {
   // typedRoutes stays OFF for now — a few links still point at etapa-2 paths.
   typedRoutes: false,
 
-  // "Ícones" was renamed "Clássicos JU RUDOLPH"; old links keep working
   async redirects() {
-    return [{ source: "/highlights/icones", destination: "/highlights/classicos", permanent: true }];
+    return [
+      // "Ícones" was renamed "Clássicos JU RUDOLPH"; old links keep working
+      { source: "/highlights/icones", destination: "/highlights/classicos", permanent: true },
+      // one address, so "Lojas" became "Contato"
+      { source: "/lojas", destination: "/contato", permanent: false },
+    ];
   },
 
   images: {

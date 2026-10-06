@@ -39,7 +39,7 @@ export const contentSections: ContentSection[] = [
       { label: "Sustentabilidade", href: "/a-marca/sustentabilidade" },
       { label: "Trabalhe conosco", href: "/a-marca/carreiras" },
       { label: "Imprensa", href: "/a-marca/imprensa" },
-      { label: "Lojas", href: "/lojas" },
+      { label: "Contato", href: "/contato" },
     ],
   },
   {
@@ -61,6 +61,7 @@ export const contentSections: ContentSection[] = [
     links: [
       { label: "Fale com a gente", href: "/ajuda/atendimento" },
       { label: "Envio e prazos", href: "/ajuda/envio" },
+      { label: "Formas de pagamento", href: "/ajuda/pagamentos" },
       { label: "Trocas e devoluções", href: "/ajuda/trocas" },
       { label: "Guia de tamanhos", href: "/ajuda/tamanhos" },
       { label: "Rastrear pedido", href: "/ajuda/pedido" },
@@ -79,6 +80,8 @@ export const contentSections: ContentSection[] = [
   },
 ];
 
+import { brand, fullAddress } from "./brand";
+
 const P = (text: string): ContentBlock => ({ type: "p", text });
 const H = (text: string): ContentBlock => ({ type: "h", text });
 
@@ -88,14 +91,18 @@ export const contentPages: Record<string, ContentPage> = {
     section: "a-marca",
     slug: "historia",
     title: "Nossa história",
-    intro: "A JU RUDOLPH nasceu de um ateliê de alfaiataria no bairro da Vila Madalena, em São Paulo.",
+    intro: "A Ju Rudolph Brand foi fundada em 2021 pela empresária Juliane Rudolph.",
     blocks: [
-      P("O que começou como um serviço de sob-medida para amigas virou, em poucos anos, uma casa de moda com ponto de venda próprio e uma coleção pensada estação a estação."),
-      H("Feito à mão, em São Paulo"),
-      P("Todas as peças de alfaiataria são produzidas no ateliê da marca, por uma equipe de costureiras com décadas de experiência."),
-      P("A produção é feita em pequenos lotes: preferimos repor um modelo que vende bem a empurrar estoque que vira remarcação."),
-      H("O que nos guia"),
-      P("Roupa que se move com o corpo, que envelhece bem e que pode voltar para o ateliê para ajustes em vez de ir para o descarte."),
+      P("A inspiração veio dos anos em que trabalhou como modelo e da lembrança da infância em meio às máquinas de costura da família."),
+      P("Com a crise social e econômica da pandemia, teve a ideia de criar as próprias roupas e abrir um e-commerce. Antes disso já era empreendedora — fundadora de uma startup, com jornadas de catorze horas — e, pela primeira vez, tinha tempo."),
+      P("Começou testando o mercado on-line com multimarcas, e a experiência deu certo. No mesmo período estudou alta-costura e níveis de matéria-prima para entender o que realmente queria fazer. Decidiu criar peças no seu estilo atemporal."),
+      H("Alfaiataria moderna"),
+      P("Sempre foi apaixonada por alfaiataria moderna — looks que funcionam do tênis à bota, passando por todos os modelos de sapato, deixando a produção mais formal ou mais descolada conforme o dia."),
+      P("Acredita na moda inteligente: peças que atravessam anos sem sair do conceito e sem temporada para serem usadas. Looks funcionais no seu closet."),
+      H("Tecido e acabamento"),
+      P("Tecidos de alta qualidade e acabamentos impecáveis, para que a sofisticação deixe a identidade na roupa e em quem a veste. A Ju é detalhista da criação do look até a experiência de compra."),
+      P("Hoje viaja pelo mundo para trazer novidades e tendências em primeira mão, frequentando lugares do mais alto padrão e elaborando produtos de alto luxo."),
+      P("Queremos que vocês tenham peças exclusivas, com a essência da mulher elegante e empoderada na sua feminilidade — o clássico e o atual juntos num só look."),
     ],
   },
   "a-marca/sustentabilidade": {
@@ -122,14 +129,8 @@ export const contentPages: Record<string, ContentPage> = {
     title: "Trabalhe conosco",
     intro: "Estamos sempre à procura de gente boa — no ateliê, nas lojas e no time de e-commerce.",
     blocks: [
-      H("Vagas abertas"),
-      { type: "list", items: [
-        "Costureira(o) de alfaiataria — São Paulo, presencial",
-        "Consultora(o) de vendas — Loja Oscar Freire",
-        "Pessoa desenvolvedora front-end — híbrido, São Paulo",
-        "Analista de e-commerce (CRM) — remoto",
-      ] },
-      P("Envie currículo e portfólio para carreiras@jurudolph.com.br com o nome da vaga no assunto."),
+      P("As vagas abertas serão publicadas nesta página."),
+      P(`Envie currículo e portfólio para ${brand.email} com o nome da vaga no assunto.`),
     ],
   },
   "a-marca/imprensa": {
@@ -138,7 +139,7 @@ export const contentPages: Record<string, ContentPage> = {
     title: "Imprensa",
     intro: "Materiais e contato para veículos de imprensa e criadores de conteúdo.",
     blocks: [
-      P("Para solicitações de imagens em alta resolução, empréstimo de peças e entrevistas, escreva para imprensa@jurudolph.com.br."),
+      P(`Para solicitações de imagens em alta resolução, empréstimo de peças e entrevistas, escreva para ${brand.email}.`),
       H("Kit de imprensa"),
       P("O kit da coleção (lookbook, ficha técnica e fotos de campanha) estará disponível para download nesta página."),
     ],
@@ -199,16 +200,16 @@ export const contentPages: Record<string, ContentPage> = {
     section: "ajuda",
     slug: "atendimento",
     title: "Fale com a gente",
-    intro: "Nosso time responde de segunda a sábado, das 9h às 18h.",
+    intro: `Compre com uma personal shopper pelo WhatsApp. ${brand.hours}.`,
     blocks: [
       { type: "list", items: [
-        "WhatsApp: +55 11 90000-0000",
-        "E-mail: atendimento@jurudolph.com.br",
-        "Telefone: 0800 000 0000",
+        `WhatsApp: ${brand.phoneDisplay}`,
+        `E-mail: ${brand.email}`,
+        fullAddress,
       ] },
       { type: "faq", items: [
-        { q: "Qual o prazo de resposta por e-mail?", a: "Até um dia útil." },
-        { q: "Vocês têm atendimento aos domingos?", a: "As lojas abrem aos domingos; o atendimento on-line volta na segunda." },
+        { q: "Qual o prazo de resposta?", a: "Até um dia útil, no horário de atendimento." },
+        { q: "Dá para comprar com atendimento pessoal?", a: "Sim — chame no WhatsApp e uma personal shopper acompanha a escolha das peças." },
       ] },
     ],
   },
@@ -216,40 +217,45 @@ export const contentPages: Record<string, ContentPage> = {
     section: "ajuda",
     slug: "envio",
     title: "Envio e prazos",
-    intro: "Enviamos para todo o Brasil. Frete grátis acima de R$ 500.",
+    intro: "Enviamos para todo o Brasil, em até 7 dias úteis após a confirmação do pagamento.",
     blocks: [
-      H("Prazos"),
-      { type: "list", items: [
-        "Entrega padrão: 3 a 7 dias úteis — R$ 35.",
-        "Entrega expressa: 1 a 2 dias úteis (capitais) — R$ 89.",
-        "Retirada em loja: pronto em 24h — grátis.",
-      ] },
+      P("Todos os produtos são enviados de acordo com o método escolhido por você, em até 7 dias úteis após a confirmação do pagamento."),
+      P("O prazo de entrega varia conforme a forma de envio escolhida e fica a cargo dos Correios ou da transportadora selecionada."),
       H("Rastreamento"),
-      P("Assim que o pedido é despachado, você recebe o código de rastreio por e-mail. Também dá para acompanhar em “Rastrear pedido”."),
+      P("Assim que o pedido é postado, você recebe o código de rastreio. Também dá para acompanhar em “Rastrear pedido”."),
       { type: "faq", items: [
         { q: "O prazo conta a partir de quando?", a: "Da confirmação do pagamento." },
         { q: "Vocês entregam no exterior?", a: "Ainda não — por enquanto só Brasil." },
       ] },
     ],
   },
+  "ajuda/pagamentos": {
+    section: "ajuda",
+    slug: "pagamentos",
+    title: "Formas de pagamento",
+    intro: "Crédito em até 5x sem juros. À vista, 5% de desconto.",
+    blocks: [
+      P("Trabalhamos com diferentes formas de pagamento. Depois de completar a compra, você escolhe a que preferir — as instruções seguintes aparecem conforme o método escolhido."),
+      { type: "list", items: [
+        "Cartão de crédito em até 5x sem juros.",
+        "À vista, com 5% de desconto.",
+      ] },
+      P("A finalização acontece em ambiente seguro e nenhum dado de cartão fica armazenado conosco."),
+    ],
+  },
   "ajuda/trocas": {
     section: "ajuda",
     slug: "trocas",
     title: "Trocas e devoluções",
-    intro: "Primeira troca grátis. Você tem 30 dias a partir do recebimento.",
+    intro: "A primeira troca é grátis, em até 30 dias corridos após a compra.",
     blocks: [
-      H("Como solicitar"),
-      { type: "list", items: [
-        "Acesse “Rastrear pedido” e clique em “Solicitar troca”.",
-        "Escolha os itens e o motivo.",
-        "Imprima a etiqueta de postagem que enviamos por e-mail.",
-      ] },
+      H("Troca"),
+      P("Você pode fazer a 1ª troca grátis pelo site em até 30 dias corridos após a compra, pelo mesmo produto ou por similares no valor que pagou."),
+      H("Devolução"),
+      P("Em até 7 dias corridos após o recebimento, a desistência da compra gera o cancelamento do pagamento e a devolução do crédito pelo mesmo meio usado na compra."),
+      P("Passado esse prazo, o crédito fica à sua disposição para usar em compras futuras."),
       H("Condições"),
       P("A peça deve estar sem uso, com etiquetas e na embalagem original. Peças de alfaiataria já ajustadas não têm troca, apenas conserto."),
-      { type: "faq", items: [
-        { q: "Quanto tempo leva o reembolso?", a: "Até 10 dias úteis após recebermos a peça de volta." },
-        { q: "Posso trocar em loja?", a: "Sim, em qualquer loja JU RUDOLPH, com a nota." },
-      ] },
     ],
   },
 
@@ -275,17 +281,16 @@ export const contentPages: Record<string, ContentPage> = {
     slug: "privacidade",
     title: "Política de privacidade",
     updated: "2026-08-01",
-    intro: "Como tratamos os seus dados pessoais, conforme a LGPD.",
+    intro: "Como tratamos os seus dados pessoais.",
     blocks: [
-      P("Texto de exemplo para revisão de estrutura. A versão final segue a Lei Geral de Proteção de Dados (Lei 13.709/2018)."),
-      H("Dados que coletamos"),
-      { type: "list", items: [
-        "Cadastro: nome, e-mail, telefone, CPF e endereço.",
-        "Navegação: páginas visitadas, itens vistos e cookies.",
-        "Compra: histórico de pedidos e forma de pagamento (sem guardar o número completo do cartão).",
-      ] },
+      P("Nos comprometemos a preservar os dados de todos os clientes. Informações importantes como senha e CPF são criptografadas no momento do cadastro, antes de serem salvas."),
+      P("A finalização da sua compra é realizada em ambiente seguro, e nenhuma informação relacionada a cartões de crédito ou contas bancárias é armazenada em nossos bancos de dados."),
+      P("Os dados cadastrais dos clientes não são vendidos, trocados ou divulgados a terceiros, exceto quando necessários para o processo de entrega, para cobrança ou para a participação em promoções solicitadas por você."),
+      H("Cookies"),
+      P("Nosso site usa cookies e informações da sua navegação para entender o perfil de quem visita o site e aperfeiçoar serviços, produtos e conteúdos. Essas informações são registradas automaticamente e mantidas em sigilo."),
       H("Seus direitos"),
-      P("Você pode pedir acesso, correção ou exclusão dos seus dados a qualquer momento pelo e-mail privacidade@jurudolph.com.br."),
+      P(`Você pode pedir acesso, correção ou exclusão dos seus dados a qualquer momento pelo e-mail ${brand.email}.`),
+      P("Qualquer alteração nesta política será informada nesta página."),
     ],
   },
   "legal/cookies": {
@@ -307,7 +312,7 @@ export const contentPages: Record<string, ContentPage> = {
     intro: "Nosso compromisso com um site utilizável por todas as pessoas.",
     blocks: [
       P("Trabalhamos para atender às diretrizes WCAG 2.2 nível AA: contraste adequado, navegação por teclado, textos alternativos em imagens e respeito à preferência de movimento reduzido."),
-      P("Encontrou uma barreira? Escreva para acessibilidade@jurudolph.com.br e nos ajude a corrigir."),
+      P(`Encontrou uma barreira? Escreva para ${brand.email} e nos ajude a corrigir.`),
     ],
   },
 };

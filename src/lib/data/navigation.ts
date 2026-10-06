@@ -1,4 +1,5 @@
 import { CATEGORY_NAMES } from "./products";
+import { brand } from "./brand";
 import { giftLabel, type Catalog } from "./catalog";
 
 /**
@@ -48,7 +49,7 @@ const linkFor = (handle: string): NavLink => ({
 
 export const utilityNav: NavLink[] = [
   { label: "A Marca", href: "/a-marca" },
-  { label: "Lojas", href: "/lojas" },
+  { label: "Contato", href: "/contato" },
   { label: "Serviços", href: "/servicos" },
 ];
 
@@ -59,6 +60,7 @@ export const footerNav: NavColumn[] = [
     links: [
       { label: "Atendimento ao cliente", href: "/ajuda/atendimento" },
       { label: "Envio e prazos", href: "/ajuda/envio" },
+      { label: "Formas de pagamento", href: "/ajuda/pagamentos" },
       { label: "Trocas e devoluções", href: "/ajuda/trocas" },
       { label: "Guia de tamanhos", href: "/ajuda/tamanhos" },
     ],
@@ -69,7 +71,7 @@ export const footerNav: NavColumn[] = [
     links: [
       { label: "Nossa história", href: "/a-marca/historia" },
       { label: "Sustentabilidade", href: "/a-marca/sustentabilidade" },
-      { label: "Lojas", href: "/lojas" },
+      { label: "Contato", href: "/contato" },
     ],
   },
   {
@@ -94,10 +96,10 @@ export const footerNav: NavColumn[] = [
 ];
 
 export const socialLinks: NavLink[] = [
-  { label: "Instagram", href: "https://instagram.com" },
-  { label: "TikTok", href: "https://tiktok.com" },
-  { label: "Pinterest", href: "https://pinterest.com" },
-  { label: "YouTube", href: "https://youtube.com" },
+  { label: "Instagram", href: brand.social.instagram },
+  { label: "TikTok", href: brand.social.tiktok },
+  { label: "Pinterest", href: brand.social.pinterest },
+  { label: "YouTube", href: brand.social.youtube },
 ];
 
 export function buildNavigation(catalog: Catalog): Navigation {

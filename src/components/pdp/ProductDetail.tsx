@@ -257,8 +257,8 @@ export function ProductDetail({
             </button>
 
             <div className="mt-4 flex items-center justify-center">
-              <Link href="/lojas" className="label link-quiet">
-                Encontrar na loja
+              <Link href="/contato" className="label link-quiet">
+                Falar com uma personal shopper
               </Link>
             </div>
 
@@ -282,9 +282,9 @@ export function ProductDetail({
                 {sku && <p className="label mt-3 text-ink-muted">Referência {sku}</p>}
               </Accordion>
               <Accordion title="Entrega e devoluções">
-                <p>Entrega padrão em 3 a 7 dias úteis. Frete grátis acima de {formatPrice(500)}.</p>
+                <p>Enviamos em até 7 dias úteis após a confirmação do pagamento. O prazo da entrega depende do método escolhido no checkout.</p>
                 <p className="mt-2 text-ink-muted">
-                  Primeira troca grátis, em até 30 dias. Ver{" "}
+                  Primeira troca grátis, em até 30 dias corridos. Ver{" "}
                   <Link href="/ajuda/trocas" className="underline">
                     trocas e devoluções
                   </Link>

@@ -6,8 +6,8 @@ import { ContentHero } from "@/components/content/ContentHero";
 import { PinIcon } from "@/components/ui/icons";
 
 export const metadata: Metadata = {
-  title: "Lojas",
-  description: "As boutiques JU RUDOLPH em São Paulo, Rio de Janeiro e Curitiba.",
+  title: "Onde nos encontrar",
+  description: "Atendimento com hora marcada em São Paulo e personal shopper pelo WhatsApp.",
 };
 
 export default function LojasPage() {
@@ -15,24 +15,24 @@ export default function LojasPage() {
     <div>
       <ContentHero
         kicker="JU RUDOLPH"
-        title="Nossas lojas"
+        title="Onde nos encontrar"
         image="editorial-atelier"
         crumbs={[
           { label: "Início", href: "/" },
-          { label: "Lojas", href: "/lojas" },
+          { label: "Onde nos encontrar", href: "/contato" },
         ]}
       />
 
       <div className="mx-auto max-w-5xl px-5 py-14 lg:px-gutter">
         <p className="max-w-xl text-ink-muted">
-          Atendimento com hora marcada, ajustes de alfaiataria e o serviço de cuidado com o couro em
-          todas as unidades.
+          Atendimento com hora marcada e ajustes de alfaiataria. Para escolher peças à distância,
+          fale com uma personal shopper pelo WhatsApp.
         </p>
 
         <div className="mt-10 aspect-[16/7] w-full bg-paper-raised">
           <div className="flex h-full items-center justify-center text-ink-muted">
             <PinIcon size={20} />
-            <span className="label ml-2">Mapa das lojas</span>
+            <span className="label ml-2">Mapa</span>
           </div>
         </div>
 
