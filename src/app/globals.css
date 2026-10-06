@@ -8,7 +8,10 @@
  * ------------------------------------------------------------------ */
 @theme {
   --color-paper: #f6f5f2;
-  --color-paper-raised: #faf9f7; /* product-shot backgrounds */
+  --color-paper-raised: #faf9f7; /* panels: cart, checkout summary, contact */
+  /* Every still is repainted onto this exact colour (scripts/backdrop.mjs), so
+     the piece meets the page with no seam and no tint. Change both together. */
+  --color-shot: #ffffff;
   --color-ink: #191919;
   --color-ink-muted: #76736f; /* dormant menu items, secondary captions */
   --color-line: #1919191f; /* ~12% hairline */
